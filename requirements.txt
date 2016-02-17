@@ -2,8 +2,6 @@ Django==1.9.2
 dj-database-url==0.4.0
 gunicorn==19.4.5
 whitenoise==2.0.6
-mingus==0.5.1
-music21==2.2.1
 pbr==1.8.1
 psycopg2==2.6.1
 six==1.10.0
