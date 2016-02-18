@@ -10,4 +10,5 @@ env:
     - DJANGO_SETTINGS_MODULE="meetuppizza.settings"
 
 before_script:
+  - django.setup()
   - psql -c 'create database travis_ci_test;' -U postgres
