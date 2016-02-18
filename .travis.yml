@@ -8,3 +8,6 @@ script:
 env:
   global:
     - DJANGO_SETTINGS_MODULE="meetuppizza.settings"
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
