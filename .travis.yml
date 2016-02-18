@@ -4,11 +4,10 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - nosetests
+  - python3 manage.py test
 env:
   global:
     - DJANGO_SETTINGS_MODULE="meetuppizza.settings"
 
 before_script:
-  - django.setup()
   - psql -c 'create database travis_ci_test;' -U postgres
