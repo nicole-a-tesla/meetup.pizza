@@ -7,7 +7,7 @@ script:
   - python3 manage.py test
 env:
   global:
-    - DJANGO_SETTINGS_MODULE="meetuppizza.settings"
+    - DJANGO_SETTINGS_MODULE="meetuppizza.settings.base"
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
