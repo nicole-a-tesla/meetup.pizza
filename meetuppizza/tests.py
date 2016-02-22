@@ -7,4 +7,4 @@ class Test(TestCase):
 
   def test_page_contains_pizza(self):
     response = self.client.get('/')
-    self.assertContains(response, "Pizza")
+    self.assertContains(response, "pizza")
