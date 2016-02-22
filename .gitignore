@@ -65,3 +65,6 @@ target/
 venv
 *.pyc
 staticfiles
+
+#OSX
+.DS_Store

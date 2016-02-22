@@ -2,6 +2,12 @@ language: python
 python:
   - 3.5
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements/ci.txt
 script:
-  - nosetests
+  - python3 manage.py test
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE="meetuppizza.settings.ci"
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
