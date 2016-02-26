@@ -6,16 +6,3 @@
   <h1>welcome to meetup.pizza</h1>
 </div>
 
-<div>
-  <h1>Sign Up</h1>
-
-</div>
-
-<form action="/sign_up" method="post"> {% csrf_token %}
-  <label for="email">Email:</label>
-  <input type="text" name="email" value="" id="email">
-  <label for="password">Password:</label>
-  <input type="password" name="password" value="" id="password">
-
-  <input type="submit" value="Signup" />
-</form>
