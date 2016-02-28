@@ -43,5 +43,5 @@ class Test(TestCase):
     c = Client()
     c.post('/sign_up', self.params)
     response = c.get('/welcome')
-    self.assertContains(response, "Bjorn")
+    self.assertContains(response, "bjorn@bjorn.com")
 
