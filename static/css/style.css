@@ -10,3 +10,16 @@ h1 {
   text-align: center;
 }
 
+.signup-link {
+  text-align: center;
+
+}
+
+a {
+  text-decoration: none;
+  color: cyan;
+}
+
+a:hover { 
+  text-decoration: underline; 
+}

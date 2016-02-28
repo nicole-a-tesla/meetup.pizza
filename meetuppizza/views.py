@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
+from meetuppizza.forms import RegistrationForm
 import pdb
 
 def index(request):
@@ -13,21 +13,21 @@ def index(request):
 def sign_up(request):
   if request.method == 'GET':
     args = {}
-    args['form'] = UserCreationForm()
+    args['form'] = RegistrationForm().as_ul
     return render(request, 'sign_up.html', args)
 
   if request.method == 'POST':
-    form = UserCreationForm(request.POST)
-
+    form = RegistrationForm(request.POST)
     if form.is_valid():
       form.save()
 
       username = form.cleaned_data['username']
       password = form.cleaned_data['password1']
       user = authenticate(username=username, password=password)
-      login(request, user)
+      if user is not None:
+        login(request, user)
 
-      return redirect('/welcome')
+        return redirect('/welcome')
     else:
       return render(request, 'sign_up.html', {'form': form})
 
