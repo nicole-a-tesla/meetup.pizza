@@ -16,6 +16,8 @@ class Test(TestCase):
       'password2':'bjornbjorn'
     }
 
+    self.client = Client()
+
   def test_landing_page_is_there(self):
     response = self.client.get('/')
     self.assertEqual(response.status_code, 200)
@@ -29,52 +31,43 @@ class Test(TestCase):
     self.assertRedirects(response, '/')
 
   def test_user_is_created(self):
-    c = Client()
-    c.post('/sign_up', self.params)
+    self.client.post('/sign_up', self.params)
     self.assertEqual(1, len(User.objects.all()))
 
-
   def test_user_is_logged_in_after_signup(self):
-    c = Client()
-    c.post('/sign_up', self.params)
+    self.client.post('/sign_up', self.params)
     user = User.objects.get(username='Bjorn')
     self.assertFalse(user.is_anonymous())
 
   def test_email_displayed_on_home_page(self):
-    c = Client()
-    c.post('/sign_up', self.params)
-    response = c.get('/')
+    self.client.post('/sign_up', self.params)
+    response = self.client.get('/')
     self.assertContains(response, "bjorn@bjorn.com")
 
   def test_user_log_out(self):
-    client = Client()
-    client.post('/sign_up', self.params)
-    client.get('/sign_out')
-    user = auth.get_user(client)
+    self.client.post('/sign_up', self.params)
+    self.client.get('/sign_out')
+    user = auth.get_user(self.client)
     self.assertTrue(user.is_anonymous())
 
   def test_login(self):
-    c = Client()
-    c.post('/sign_up', self.params)
-    c.get('/sign_out')
+    self.client.post('/sign_up', self.params)
+    self.client.get('/sign_out')
     login_params = {
       'username':'Bjorn', 
       'password':'bjornbjorn',     
     }
-    c.post('/sign_in', login_params)
-    user = auth.get_user(c)
+    self.client.post('/sign_in', login_params)
+    user = auth.get_user(self.client)
     self.assertFalse(user.is_anonymous())
 
   def test_invalid_login(self):
-    c = Client()
-    c.post('/sign_up', self.params)
-    c.get('/sign_out')
     login_params = {
       'username':'Birds', 
       'password':'argulonic',     
     }
-    c.post('/sign_in', login_params)
-    user = auth.get_user(c)
+    self.client.post('/sign_in', login_params)
+    user = auth.get_user(self.client)
     self.assertTrue(user.is_anonymous())
 
 
