@@ -25,7 +25,7 @@ class Test(TestCase):
 
   def test_signup_redirects(self):
     response = self.client.post('/sign_up', self.params, follow=True)
-    self.assertRedirects(response, '/welcome')
+    self.assertRedirects(response, '/')
 
   def test_user_is_created(self):
     c = Client()
@@ -39,9 +39,9 @@ class Test(TestCase):
     user = User.objects.get(username='Bjorn')
     self.assertTrue(user.is_authenticated())
 
-  def test_email_displayed_on_welcome_page(self):
+  def test_email_displayed_on_home_page(self):
     c = Client()
     c.post('/sign_up', self.params)
-    response = c.get('/welcome')
+    response = c.get('/')
     self.assertContains(response, "bjorn@bjorn.com")
 

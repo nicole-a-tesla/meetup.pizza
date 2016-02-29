@@ -27,9 +27,8 @@ def sign_up(request):
       if user is not None:
         login(request, user)
 
-        return redirect('/welcome')
+        return redirect('/')
     else:
       return render(request, 'sign_up.html', {'form': form})
 
-def welcome(request):
-  return render(request, 'welcome.html')
+

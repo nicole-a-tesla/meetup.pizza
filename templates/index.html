@@ -1,6 +1,11 @@
+
 {% load staticfiles %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" >
+
+{% if not user.is_anonymous %}
+  <h1>WELCOME, {{request.user.email}} !</h1>
+{% endif %}
 
 <div>
   <h1>welcome to meetup.pizza</h1>
