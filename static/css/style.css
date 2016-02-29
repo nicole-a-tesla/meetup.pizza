@@ -15,6 +15,11 @@ h1 {
 
 }
 
+.signin-link {
+  text-align: center;
+
+}
+
 a {
   text-decoration: none;
   color: cyan;
