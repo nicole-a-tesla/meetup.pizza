@@ -3,7 +3,7 @@ from django.template import loader
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from meetuppizza.forms import RegistrationForm
 import pdb
 
@@ -32,3 +32,21 @@ def sign_up(request):
       return render(request, 'sign_up.html', {'form': form})
 
 
+def sign_out(request):
+  logout(request)
+  return redirect('/')
+
+def sign_in(request):
+  if request.method == 'GET':
+    return render(request, 'sign_in.html')
+
+  if request.method == 'POST':
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+      login(request, user)   
+      return redirect('/')
+    else:
+      error = "The username or password were incorrect."
+      return render(request, 'sign_in.html',  {'error': error})
