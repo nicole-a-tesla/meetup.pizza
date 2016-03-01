@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import psycopg2
 import dj_database_url
-from unipath import Path 
+from unipath import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'super_user'
 )
 
 MIDDLEWARE_CLASSES = (
