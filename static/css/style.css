@@ -10,14 +10,8 @@ h1 {
   text-align: center;
 }
 
-.signup-link {
+.welcome-header {
   text-align: center;
-
-}
-
-.signin-link {
-  text-align: center;
-
 }
 
 a {
@@ -25,6 +19,6 @@ a {
   color: cyan;
 }
 
-a:hover { 
-  text-decoration: underline; 
+a:hover {
+  text-decoration: underline;
 }

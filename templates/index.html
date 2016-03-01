@@ -1,21 +1,31 @@
-
 {% load staticfiles %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" >
 
-{% if not user.is_anonymous %}
-  <h1>WELCOME, {{request.user.email}} !</h1>
-  <a href="/sign_out">Sign Out</a>
-{% endif %}
 
-<div>
-  <h1>welcome to meetup.pizza</h1>
-</div>
+<div class="welcome-header">
 
-<div class="signup-link">
-    <a href="/sign_up">Signup</a>
-</div>
+  {% if not user.is_anonymous %}
 
-<div class="signin-link">
-    <a href="/sign_in">Sign In</a>
+    <div>
+      <h1>WELCOME, {{request.user.email}} !</h1>
+      <a href="/sign_out">Sign Out</a>
+    </div>
+
+  {% else %}
+
+    <div>
+      <h1>welcome to meetup.pizza</h1>
+    </div>
+
+    <div class="signup-link">
+        <a href="/sign_up">Signup</a>
+    </div>
+
+    <div class="signin-link">
+        <a href="/sign_in">Sign In</a>
+    </div>
+
+  {% endif %}
+
 </div>
