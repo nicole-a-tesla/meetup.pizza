@@ -35,6 +35,11 @@ class Test(TestCase):
     user = User.objects.get(username='Bjorn')
     self.assertFalse(user == None)
 
+  def test_super_user_is_created(self):
+    self.client.post('/sign_up', self.params)
+    user = User.objects.get(username='adminotaur')
+    self.assertFalse(user == None)
+
   def test_user_is_logged_in_after_signup(self):
     self.client.post('/sign_up', self.params)
     user = User.objects.get(username='Bjorn')
