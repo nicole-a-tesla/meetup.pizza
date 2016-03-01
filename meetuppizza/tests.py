@@ -10,9 +10,9 @@ import pdb
 class Test(TestCase):
   def setUp(self):
     self.params =  {
-      'username':'Bjorn', 
-      'email':'bjorn@bjorn.com', 
-      'password1':'bjornbjorn', 
+      'username':'Bjorn',
+      'email':'bjorn@bjorn.com',
+      'password1':'bjornbjorn',
       'password2':'bjornbjorn'
     }
 
@@ -32,7 +32,8 @@ class Test(TestCase):
 
   def test_user_is_created(self):
     self.client.post('/sign_up', self.params)
-    self.assertEqual(1, len(User.objects.all()))
+    user = User.objects.get(username='Bjorn')
+    self.assertFalse(user == None)
 
   def test_user_is_logged_in_after_signup(self):
     self.client.post('/sign_up', self.params)
@@ -54,8 +55,8 @@ class Test(TestCase):
     self.client.post('/sign_up', self.params)
     self.client.get('/sign_out')
     login_params = {
-      'username':'Bjorn', 
-      'password':'bjornbjorn',     
+      'username':'Bjorn',
+      'password':'bjornbjorn',
     }
     self.client.post('/sign_in', login_params)
     user = auth.get_user(self.client)
@@ -63,8 +64,8 @@ class Test(TestCase):
 
   def test_invalid_login(self):
     login_params = {
-      'username':'Birds', 
-      'password':'argulonic',     
+      'username':'Birds',
+      'password':'argulonic',
     }
     self.client.post('/sign_in', login_params)
     user = auth.get_user(self.client)
