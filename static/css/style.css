@@ -10,3 +10,15 @@ h1 {
   text-align: center;
 }
 
+.welcome-header {
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: cyan;
+}
+
+a:hover {
+  text-decoration: underline;
+}

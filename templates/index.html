@@ -2,6 +2,30 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" >
 
-<div>
-  <h1>welcome to meetup.pizza</h1>
+
+<div class="welcome-header">
+
+  {% if not user.is_anonymous %}
+
+    <div>
+      <h1>WELCOME, {{request.user.email}} !</h1>
+      <a href="/sign_out">Sign Out</a>
+    </div>
+
+  {% else %}
+
+    <div>
+      <h1>welcome to meetup.pizza</h1>
+    </div>
+
+    <div class="signup-link">
+        <a href="/sign_up">Signup</a>
+    </div>
+
+    <div class="signin-link">
+        <a href="/sign_in">Sign In</a>
+    </div>
+
+  {% endif %}
+
 </div>
