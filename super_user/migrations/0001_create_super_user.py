@@ -10,7 +10,7 @@ def migrate_up(apps, schema_editor):
   User.objects.using(db_alias).create(
     username='adminotaur',
     email='admin@meetup.pizza',
-    password=make_password(os.getenv('ADMIN_PASS')),
+    password=make_password(os.getenv('ADMIN_PASS'), hasher='pbkdf2_sha256'),
     is_superuser=True,
     is_staff=True
   )
