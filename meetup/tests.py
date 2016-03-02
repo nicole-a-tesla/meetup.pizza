@@ -1,6 +1,7 @@
 from django.test import TestCase
 from meetup.models import Meetup
 from django.db import IntegrityError
+from django.db import DataError
 
 class TestMeetup(TestCase):
 
@@ -20,3 +21,8 @@ class TestMeetup(TestCase):
   def test_meetup_id_can_not_be_blank(self):
     meetup = Meetup(name='papers we love')
     self.assertRaises(IntegrityError, meetup.save)
+
+  def test_name_can_not_be_over_500_characters(self):
+    name = 'x' *501
+    meetup = Meetup(name=name, meetup_id=1)
+    self.assertRaises(DataError, meetup.save)
