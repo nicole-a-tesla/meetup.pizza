@@ -36,9 +36,13 @@ class Test(TestCase):
     self.assertFalse(user == None)
 
   def test_super_user_is_created(self):
-    self.client.post('/sign_up', self.params)
     user = User.objects.get(username='adminotaur')
-    self.assertFalse(user == None)
+    self.assertTrue(user.is_staff)
+    self.assertTrue(user.is_superuser)
+
+  def test_super_user_is_created_with_hashed_password(self):
+    user = User.objects.get(username='adminotaur')
+    self.assertIn('pbkdf2_sha256$', user.password)
 
   def test_user_is_logged_in_after_signup(self):
     self.client.post('/sign_up', self.params)
