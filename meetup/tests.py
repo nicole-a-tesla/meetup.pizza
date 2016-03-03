@@ -38,7 +38,7 @@ class TestMeetup(TestCase):
     self.assertRaises(IntegrityError, n.save)
 
   def test_meetuo_name_is_unique(self):
-    m = Meetup(name="Meetup", meetup_id=1)
+    m = Meetup(name="Meetup", meetup_id=1)  
     m.save()
     n = Meetup(name="Meetup new", meetup_id=1)
     self.assertRaises(IntegrityError, n.save)
