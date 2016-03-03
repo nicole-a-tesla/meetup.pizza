@@ -52,3 +52,5 @@ class TestMeetup(TestCase):
     meetup.pizza_places.add(place)
     self.assertEquals(1, len(meetup.pizza_places.all()))
 
+  
+
