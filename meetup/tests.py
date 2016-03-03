@@ -1,5 +1,6 @@
 from django.test import TestCase
 from meetup.models import Meetup
+from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError
 from django.db import DataError
 
@@ -37,9 +38,16 @@ class TestMeetup(TestCase):
     n = Meetup(name="Meetup", meetup_id=2)
     self.assertRaises(IntegrityError, n.save)
 
-  def test_meetuo_name_is_unique(self):
+  def test_meetup_name_is_unique(self):
     m = Meetup(name="Meetup", meetup_id=1)  
     m.save()
     n = Meetup(name="Meetup new", meetup_id=1)
     self.assertRaises(IntegrityError, n.save)
 
+  def test_getting_all_associated_pizzas(self):
+    meetup= Meetup(name="Meeetup1", meetup_id=1)
+    meetup.save()
+    place = PizzaPlace(name="Pete Zazz")
+    place.save()
+    meetup.pizza_places.add(place)
+    self.assertEquals(1, len(meetup.pizza_places.all()))
