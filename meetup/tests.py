@@ -26,3 +26,7 @@ class TestMeetup(TestCase):
     name = 'x' *501
     meetup = Meetup(name=name, meetup_id=1)
     self.assertRaises(DataError, meetup.save)
+
+  def test_string_representation(self):
+    m = Meetup(name="Mr. Meetup", meetup_id=4)
+    self.assertEquals("Mr. Meetup", str(m))

@@ -4,3 +4,8 @@ from django.db import models
 class Meetup(models.Model):
   name = models.CharField(max_length=500, null=False, blank=False, default=None)
   meetup_id = models.PositiveIntegerField()
+
+  def __str__(self):
+    return self.name
+
+
