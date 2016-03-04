@@ -5,7 +5,7 @@ import pdb
 
 def validate_urlname(link):
   validator = RegexValidator(
-    regex='meetup\.com\/\w+\/$',
+    regex='meetup\.com\/\w+(-\w+)*\/$',
     message="Does not conform to Meetup Url",
     code='invalid_url')
   return validator(link)

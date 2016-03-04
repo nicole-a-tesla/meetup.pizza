@@ -72,8 +72,14 @@ class TestMeetup(TestCase):
     meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala/whatever/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
+  def test_url_with_dashes_in_urlname_passes(self):
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
+    errors_raiesed_by_meetup = meetup.full_clean()
+    self.assertTrue(errors_raiesed_by_meetup == None)
+
   def test_meetup_url_with_urlname_and_trailing_slash_passes(self):
     meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertTrue(errors_raiesed_by_meetup == None)
+
 
