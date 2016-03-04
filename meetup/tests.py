@@ -1,8 +1,8 @@
 from django.test import TestCase
 from meetup.models import Meetup
 from pizzaplace.models import PizzaPlace
-from django.db import IntegrityError
-from django.db import DataError
+from django.db import IntegrityError, DataError
+from django.core.exceptions import ValidationError
 
 class TestMeetup(TestCase):
 
@@ -52,5 +52,28 @@ class TestMeetup(TestCase):
     meetup.pizza_places.add(place)
     self.assertEquals(1, len(meetup.pizza_places.all()))
 
-  
+  def test_validates_url_syntax(self):
+    meetup= Meetup(name="Meeetup1", meetup_link='hi')
+    self.assertRaises(ValidationError, meetup.full_clean)
+
+  def test_non_meetup_url_fails(self):
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.example.com/')
+    self.assertRaises(ValidationError, meetup.full_clean)
+
+  def test_meetup_url_with_no_urlname_fails(self):
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/')
+    self.assertRaises(ValidationError, meetup.full_clean)
+
+  def test_meetup_url_with_no_trailing_slash_fails(self):
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala')
+    self.assertRaises(ValidationError, meetup.full_clean)
+
+  def test_meetup_url_with_multiple_urlnames_fails(self):
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala/whatever/')
+    self.assertRaises(ValidationError, meetup.full_clean)
+
+  def test_meetup_url_with_urlname_and_trailing_slash_passes(self):
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala/')
+    errors_raiesed_by_meetup = meetup.full_clean()
+    self.assertTrue(errors_raiesed_by_meetup == None)
 
