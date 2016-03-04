@@ -50,7 +50,7 @@ class TestMeetup(TestCase):
     place = PizzaPlace(name="Pete Zazz")
     place.save()
     meetup.pizza_places.add(place)
-    self.assertEquals(1, len(meetup.pizza_places.all()))
+    self.assertEquals(place, meetup.pizza_places.all()[0])
 
   def test_validates_url_syntax(self):
     meetup= Meetup(name="Meeetup1", meetup_link='hi')
