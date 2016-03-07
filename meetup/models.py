@@ -1,7 +1,6 @@
 from django.db import models
 from pizzaplace.models import PizzaPlace
 from django.core.validators import RegexValidator
-import pdb
 
 def validate_urlname(link):
   validator = RegexValidator(
@@ -16,7 +15,7 @@ class Meetup(models.Model):
   name = models.CharField(max_length=500, null=False, blank=False, default=None, unique=True)
   meetup_link = models.URLField(max_length=500,
                                 unique=True,
-                                default=None, 
+                                default=None,
                                 validators=[validate_urlname])
   pizza_places = models.ManyToManyField(PizzaPlace)
 
