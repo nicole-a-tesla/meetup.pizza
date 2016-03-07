@@ -28,4 +28,18 @@
 
   {% endif %}
 
+  {% for meetup in meetups %}
+
+    <div class="meetup">
+      <h3>{{ meetup }}</h3>
+      {% for place in meetup.pizza_places.all %}
+      <li>
+        {{ place }}
+      </li>
+      {% endfor %}
+    </div>
+
+
+  {% endfor %}
+
 </div>

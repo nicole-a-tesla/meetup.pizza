@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from meetuppizza.forms import RegistrationForm
+from meetup.models import Meetup
+from pizzaplace.models import PizzaPlace
 from django.contrib import auth
 
 params = {
@@ -28,6 +30,28 @@ class TestLandingPage(TestCase):
     self.client.post('/sign_up', params)
     response = self.client.get('/')
     self.assertContains(response, "bjorn@bjorn.com")
+
+  def test_meetup_is_displayed_on_landing_page(self):
+    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
+    meetup.save()
+    response = self.client.get('/')
+    self.assertContains(response, 'new meetup')
+
+  def test_meetups_pizza_places_are_displayed_on_landing_page(self):
+    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
+    meetup.save()
+    meetup.pizza_places.create(name='Pizza!?')
+    response = self.client.get('/')
+    self.assertContains(response, 'Pizza!?')
+
+  def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self):
+    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
+    meetup.save()
+    meetup.pizza_places.create(name='Pizza!?')
+    meetup.pizza_places.create(name='PizzOOO')
+    response = self.client.get('/')
+    self.assertContains(response, 'Pizza!?')
+    self.assertContains(response, 'PizzOOO')
 
 
 class TestUserAuthentication(TestCase):
