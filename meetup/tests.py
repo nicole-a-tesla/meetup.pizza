@@ -54,7 +54,7 @@ class TestMeetup(TestCase):
     self.assertEquals(place, meetup.pizza_places.all()[0])
 
   def test_meetup_raises_error_on_invalid_url(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='hi')
+    meetup= Meetup(name="Meeetup1", meetup_link='hi/ok/what')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_link_does_not_point_to_meetupdotcom(self):
@@ -66,22 +66,26 @@ class TestMeetup(TestCase):
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_no_trailing_slash_in_meetup_url(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala')
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/hackerhours')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_multiple_urlnames(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala/whatever/')
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/hackerhours/events/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_meetup_url_with_urlname_and_trailing_slash_passes(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/lalala/')
+    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/hackerhours/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertTrue(errors_raiesed_by_meetup == None)
 
   def test_url_with_dashes_in_urlname_passes(self):
-    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/papers-we-love/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertIsNone(errors_raiesed_by_meetup)
+
+  def test_non_real_meetup_raises_validation_error(self):
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
+    self.assertRaises(ValidationError, meetup.full_clean)
 
 class TestMeetupApi(TestCase):
 
