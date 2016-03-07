@@ -3,6 +3,7 @@ from meetup.models import Meetup
 from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
+from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
 
 class TestMeetup(TestCase):
 
@@ -81,4 +82,37 @@ class TestMeetup(TestCase):
     meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertIsNone(errors_raiesed_by_meetup)
+
+class TestMeetupApi(TestCase):
+
+  def test_can_parse_out_urlname(self):
+    link = "https://meetup.com/Hello-Pizza/"
+    lookup_agent = MeetupApiLookupAgent(link)
+    urlname = lookup_agent.get_urlname()
+    self.assertEquals("Hello-Pizza", urlname)
+
+  def test_valid_url_returns_json_with_matching_name_attribute(self):
+    link = "http://meetup.com/papers-we-love/"
+    lookup_agent = MeetupApiLookupAgent(link)
+    response = lookup_agent.get_response()
+    meetup_name = response.json()['name']
+    self.assertEqual(meetup_name, 'Papers We Love')
+
+  def test_invalid_url_returns_404(self):
+    link = "http://meetup.com/NONSENSE-NOTHING/"
+    lookup_agent = MeetupApiLookupAgent(link)
+    response = lookup_agent.get_response()
+    self.assertEqual(response.status_code, 404)
+
+  def test_validator_returns_true_for_valid_url(self):
+    link = "http://meetup.com/papers-we-love/"
+    lookup_agent = MeetupApiLookupAgent(link)
+    is_valid = lookup_agent.is_real_meetup()
+    self.assertTrue(is_valid)
+
+  def test_validator_returns_false_for_invalid_url(self):
+    link = "http://meetup.com/this-is-not-a-meetup/"
+    lookup_agent = MeetupApiLookupAgent(link)
+    is_valid = lookup_agent.is_real_meetup()
+    self.assertFalse(is_valid)
 
