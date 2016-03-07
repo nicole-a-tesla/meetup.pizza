@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from meetuppizza.forms import RegistrationForm
 from django.contrib import auth
 
-import pdb
-
 params = {
       'username':'Bjorn',
       'email':'bjorn@bjorn.com',
@@ -68,5 +66,16 @@ class TestUserAuthentication(TestCase):
       'password':'argulonic',
     }
     self.client.post('/sign_in', login_params)
+    user = auth.get_user(self.client)
+    self.assertTrue(user.is_anonymous())
+
+  def test_raises_error_if_email_not_provided_on_signup(self):
+    params = {
+      'username':'Bjorn',
+      'email':'',
+      'password1':'bjornbjorn',
+      'password2':'bjornbjorn'
+    }
+    self.client.post('/sign_up', params)
     user = auth.get_user(self.client)
     self.assertTrue(user.is_anonymous())

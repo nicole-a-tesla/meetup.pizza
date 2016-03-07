@@ -5,7 +5,7 @@
 
 <div class="welcome-header">
 
-  {% if not user.is_anonymous %}
+  {% if user.is_authenticated %}
 
     <div>
       <h1>WELCOME, {{request.user.email}} !</h1>

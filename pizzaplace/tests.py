@@ -2,7 +2,6 @@ from django.test import TestCase
 from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError
 from django.db import DataError
-import pdb
 
 class TestPizzaPlace(TestCase):
 
