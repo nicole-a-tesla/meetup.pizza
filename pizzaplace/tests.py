@@ -20,15 +20,15 @@ class TestPizzaPlace(TestCase):
     place2 = PizzaPlace(name="Such Pizza")
     self.assertRaises(IntegrityError, place2.save)
 
-  def test_string_representation(self):
+  def test_string_representation_of_pizza_place(self):
     place = PizzaPlace(name="Pete's aPlace")
     self.assertEquals("Pete's aPlace", str(place))
 
-  def test_name_length(self):
+  def test_name_length_invalid_if_over_500_char(self):
     name = "x" * 501
     place = PizzaPlace(name=name)
     self.assertRaises(DataError, place.save)
 
-  def test_name_can_not_be_blank(self):
+  def test_raises_error_if_name_is_blank(self):
     place = PizzaPlace()
     self.assertRaises(IntegrityError, place.save)
