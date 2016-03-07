@@ -3,7 +3,6 @@ from django.http import HttpResponse
 import requests
 import os
 
-
 class MeetupApiLookupAgent():
   def __init__(self, link):
     self.link = link
