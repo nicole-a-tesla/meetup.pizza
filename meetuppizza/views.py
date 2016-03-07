@@ -4,9 +4,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from meetuppizza.forms import RegistrationForm
+from meetup.models import Meetup
 
 def index(request):
-  return render(request, 'index.html')
+  meetups = Meetup.objects.all()
+  return render(request, 'index.html', {"meetups": meetups})
 
 def sign_up(request):
   if request.method == 'GET':
