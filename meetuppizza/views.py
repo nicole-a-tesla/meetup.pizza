@@ -1,20 +1,22 @@
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from meetuppizza.forms import RegistrationForm
-import pdb
+from meetup.models import Meetup
+from meetup.services.meetup_info_fetch import MeetupInfoFetch
 
 def index(request):
-  return render(request, 'index.html')
+  meetups = Meetup.objects.all()
+  fatMeetups = MeetupInfoFetch(meetups).fat_meetups()
+  return render(request, 'index.html', {"meetups": fatMeetups})
 
 def sign_up(request):
   if request.method == 'GET':
-    args = {}
-    args['form'] = RegistrationForm().as_ul
-    return render(request, 'sign_up.html', args)
+    context = {}
+    context['form'] = RegistrationForm().as_ul
+    return render(request, 'sign_up.html', context)
 
   if request.method == 'POST':
     form = RegistrationForm(request.POST)
@@ -45,7 +47,7 @@ def sign_in(request):
     password = request.POST['password']
     user = authenticate(username=username, password=password)
     if user is not None:
-      login(request, user)   
+      login(request, user)
       return redirect('/')
     else:
       error = "The username or password were incorrect."

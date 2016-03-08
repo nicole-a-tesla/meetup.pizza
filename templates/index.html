@@ -5,7 +5,7 @@
 
 <div class="welcome-header">
 
-  {% if not user.is_anonymous %}
+  {% if user.is_authenticated %}
 
     <div>
       <h1>WELCOME, {{request.user.email}} !</h1>
@@ -27,5 +27,22 @@
     </div>
 
   {% endif %}
+
+  {% for meetup in meetups %}
+
+    <div class="meetup">
+      <h3><a href="{{ meetup.meetup_link }}">{{ meetup }}</a></h3>
+      
+      
+      <p>{{ meetup.next_event_topic }} - {{ meetup.datetime}} at <a href="{{ meetup.map_link }}">{{ meetup.venue }}</a></p>
+      {% for place in meetup.pizza_places.all %}
+      <li>
+        {{ place }}
+      </li>
+      {% endfor %}
+    </div>
+
+
+  {% endfor %}
 
 </div>
