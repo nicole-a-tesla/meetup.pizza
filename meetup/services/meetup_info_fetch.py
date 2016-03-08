@@ -26,6 +26,13 @@ class MeetupInfoFetch():
       meetup.venue = event_info[0]['venue']['name']
       meetup.next_event_topic = event_info[0]['name']
       meetup.datetime = self.parse_time(event_info[0]['time'])
+      meetup.map_link = self.generate_map_link(event_info)
+      
 
   def parse_time(self, time_string):
     return time.ctime(int(time_string))[:-6]
+
+  def generate_map_link(self, event_info):
+    lat = event_info[0]['group']['lat']
+    lon = event_info[0]['group']['lon']
+    return "https://www.google.com/maps?q=%s,%s" % (lat, lon) 

@@ -61,6 +61,12 @@ class TestLandingPage(TestCase):
     self.assertContains(response, "Fri Sep 12 04:00:00")    
     self.assertContains(response, "Hands-on session: Exploring Reactive Programming")    
 
+  def test_landing_page_contains_map_link(self):
+    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    meetup.save()
+    response = self.client.get('/')
+    self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")    
+
 
 class TestUserAuthentication(TestCase):
 

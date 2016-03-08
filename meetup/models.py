@@ -32,6 +32,7 @@ class Meetup(models.Model):
   venue = ''
   next_event_topic = ''
   datetime = ''
+  map_link = ''
 
   def __str__(self):
     return self.name
