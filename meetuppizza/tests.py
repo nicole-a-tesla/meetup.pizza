@@ -53,6 +53,14 @@ class TestLandingPage(TestCase):
     self.assertContains(response, 'Pizza!?')
     self.assertContains(response, 'PizzOOO')
 
+  def test_meetup_info_is_displayed(self):
+    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    meetup.save()
+    response = self.client.get('/')
+    self.assertContains(response, "ThoughtWorks")    
+    self.assertContains(response, "Fri Sep 12 04:00:00")    
+    self.assertContains(response, "Hands-on session: Exploring Reactive Programming")    
+
 
 class TestUserAuthentication(TestCase):
 
