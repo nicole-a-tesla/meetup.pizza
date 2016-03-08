@@ -32,6 +32,9 @@
 
     <div class="meetup">
       <h3>{{ meetup }}</h3>
+      <h3><a href="{{ meetup.meetup_link }}">{{ meetup }}</a></h3>
+
+      <p>{{ meetup.next_event_topic }} - {{ meetup.datetime}} at <a href="{{ meetup.map_link }}">{{ meetup.venue }}</a></p>
       {% for place in meetup.pizza_places.all %}
       <li>
         {{ place }}

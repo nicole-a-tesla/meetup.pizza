@@ -53,6 +53,20 @@ class TestLandingPage(TestCase):
     self.assertContains(response, 'Pizza!?')
     self.assertContains(response, 'PizzOOO')
 
+  def test_meetup_info_is_displayed(self):
+    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    meetup.save()
+    response = self.client.get('/')
+    self.assertContains(response, "ThoughtWorks")
+    self.assertContains(response, "Fri Sep 12 04:00:00")
+    self.assertContains(response, "Hands-on session: Exploring Reactive Programming")
+
+  def test_landing_page_contains_map_link(self):
+    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    meetup.save()
+    response = self.client.get('/')
+    self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
+
 
 class TestUserAuthentication(TestCase):
 
@@ -60,7 +74,6 @@ class TestUserAuthentication(TestCase):
     self.client.post('/sign_up', params)
     user = User.objects.get(username='Bjorn')
     self.assertIsNotNone(user)
-
 
   def test_user_is_logged_in_after_signup(self):
     self.client.post('/sign_up', params)
