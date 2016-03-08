@@ -4,7 +4,7 @@ from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
 from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
-
+from meetup.services.meetup_info_fetch import MeetupInfoFetch
 class TestMeetup(TestCase):
 
   def test_meetup_is_a_thing(self):
@@ -119,4 +119,35 @@ class TestMeetupApi(TestCase):
     lookup_agent = MeetupApiLookupAgent(link)
     is_valid = lookup_agent.is_real_meetup()
     self.assertFalse(is_valid)
+
+
+  def test_events_lookup_returns_event(self):
+    link = "http://meetup.com/papers-we-love/"
+    lookup_agent = MeetupApiLookupAgent(link)
+    response = lookup_agent.get_response('events')
+    self.assertEqual(response.status_code, 200)
+
+
+class TestMeetupInfoFetch(TestCase):
+
+  def test_returns_meetup_collection(self):
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+    i_fetch = MeetupInfoFetch([meetup])
+    self.assertEqual(meetup.name, i_fetch.fat_meetups()[0].name)
+
+  def test_fat_meetups_returns_at_least_one_event_venue_name(self):
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    i_fetch = MeetupInfoFetch([meetup])
+    self.assertEquals('ThoughtWorks', i_fetch.fat_meetups()[0].venue)
+
+  def test_fat_meetups_returns_at_least_one_next_event_topic(self):
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    i_fetch = MeetupInfoFetch([meetup])
+    self.assertEquals('Hands-on session: Exploring Reactive Programming', i_fetch.fat_meetups()[0].next_event_topic)
+
+  def test_fat_meetups_returns_at_least_one_next_event_time(self):
+    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    i_fetch = MeetupInfoFetch([meetup])
+    self.assertEquals('Fri Sep 12 04:00:00', i_fetch.fat_meetups()[0].datetime)
+
 

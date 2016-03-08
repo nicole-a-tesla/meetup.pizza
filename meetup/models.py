@@ -29,6 +29,9 @@ class Meetup(models.Model):
                                 default=None,
                                 validators=[validate_urlname, validate_meetup_exists])
   pizza_places = models.ManyToManyField(PizzaPlace)
+  venue = ''
+  next_event_topic = ''
+  datetime = ''
 
   def __str__(self):
     return self.name
