@@ -8,9 +8,6 @@ from meetup.services.meetup_info_fetch import MeetupInfoFetch
 from unittest import mock
 from unittest.mock import patch
 
-
-import pdb
-
 class TestMeetup(TestCase):
 
   def test_meetup_is_a_thing(self):
@@ -40,23 +37,18 @@ class TestMeetup(TestCase):
     self.assertEquals("Mr. Meetup", str(m))
 
   def test_meetup_name_is_unique(self):
-    m = Meetup(name="Meetup", meetup_link='http://meetup.com/some-meetup')
-    m.save()
+    m = Meetup.objects.create(name="Meetup", meetup_link='http://meetup.com/some-meetup')
     n = Meetup(name="Meetup", meetup_link='http://meetup.com/some-other-meetup')
     self.assertRaises(IntegrityError, n.save)
 
   def test_meetup_link_is_unique(self):
-    m = Meetup(name="Meetup", meetup_link='http://meetup.com/some-meetup')
-    m.save()
+    m = Meetup.objects.create(name="Meetup", meetup_link='http://meetup.com/some-meetup')
     n = Meetup(name="Meetup new", meetup_link='http://meetup.com/some-meetup')
     self.assertRaises(IntegrityError, n.save)
 
   def test_getting_all_associated_pizzas(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://meetup.com/some-meetup')
-    meetup.save()
-    place = PizzaPlace(name="Pete Zazz")
-    place.save()
-    meetup.pizza_places.add(place)
+    meetup= Meetup.objects.create(name="Meeetup1", meetup_link='http://meetup.com/some-meetup')
+    place = meetup.pizza_places.create(name="Pete Zazz")
     self.assertEquals(place, meetup.pizza_places.all()[0])
 
   def test_meetup_raises_error_on_invalid_url(self):
@@ -93,43 +85,41 @@ class TestMeetup(TestCase):
     meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
-# class TestMeetupApi(TestCase):
+class TestMeetupApi(TestCase):
 
-#   def test_can_parse_out_urlname(self):
-#     lookup_agent = self.lookup_agent_builder("https://meetup.com/Hello-Pizza/")
-#     urlname = lookup_agent.get_urlname()
-#     self.assertEquals("Hello-Pizza", urlname)
+  def test_can_parse_out_urlname(self):
+    lookup_agent = self.lookup_agent_builder("https://meetup.com/Hello-Pizza/")
+    urlname = lookup_agent.get_urlname()
+    self.assertEquals("Hello-Pizza", urlname)
 
-#   def test_valid_url_returns_json_with_matching_name_attribute(self):
-#     lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-#     response = lookup_agent.get_response()
-#     meetup_name = response.json()['name']
-#     self.assertEqual(meetup_name, 'Papers We Love')
+  def test_valid_url_returns_json_with_matching_name_attribute(self):
+    lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
+    response = lookup_agent.get_response()
+    meetup_name = response.json()['name']
+    self.assertEqual(meetup_name, 'Papers We Love')
 
-#   def test_invalid_url_returns_404(self):
-#     lookup_agent = self.lookup_agent_builder("http://meetup.com/NONSENSE-NOTHING/")
-#     response = lookup_agent.get_response()
-#     self.assertEqual(response.status_code, 404)
+  def test_invalid_url_returns_404(self):
+    lookup_agent = self.lookup_agent_builder("http://meetup.com/NONSENSE-NOTHING/")
+    response = lookup_agent.get_response()
+    self.assertEqual(response.status_code, 404)
 
-#   def test_validator_returns_true_for_valid_url(self):
-#     lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-#     is_valid = lookup_agent.is_real_meetup()
-#     self.assertTrue(is_valid)
+  def test_validator_returns_true_for_valid_url(self):
+    lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
+    is_valid = lookup_agent.is_real_meetup()
+    self.assertTrue(is_valid)
 
-#   def test_validator_returns_false_for_invalid_url(self):
-#     lookup_agent = self.lookup_agent_builder("http://meetup.com/this-is-not-a-meetup/")
-#     is_valid = lookup_agent.is_real_meetup()
-#     self.assertFalse(is_valid)
+  def test_validator_returns_false_for_invalid_url(self):
+    lookup_agent = self.lookup_agent_builder("http://meetup.com/this-is-not-a-meetup/")
+    is_valid = lookup_agent.is_real_meetup()
+    self.assertFalse(is_valid)
 
-#   def test_events_lookup_returns_event(self):
-#     lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-#     response = lookup_agent.get_response('events')
-#     self.assertEqual(response.status_code, 200)
+  def test_events_lookup_returns_event(self):
+    lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
+    response = lookup_agent.get_response('events')
+    self.assertEqual(response.status_code, 200)
 
-#   def lookup_agent_builder(self, link):
-#     return MeetupApiLookupAgent(link)
-
-
+  def lookup_agent_builder(self, link):
+    return MeetupApiLookupAgent(link)
 
 @patch("meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent")
 class TestMeetupInfoFetch(TestCase):

@@ -32,38 +32,33 @@ class TestLandingPage(TestCase):
     self.assertContains(response, "bjorn@bjorn.com")
 
   def test_meetup_is_displayed_on_landing_page(self):
-    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.save()
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     response = self.client.get('/')
     self.assertContains(response, 'new meetup')
 
   def test_meetups_pizza_places_are_displayed_on_landing_page(self):
-    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.save()
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name='Pizza!?')
     response = self.client.get('/')
     self.assertContains(response, 'Pizza!?')
 
   def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self):
-    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.save()
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name='Pizza!?')
     meetup.pizza_places.create(name='PizzOOO')
     response = self.client.get('/')
     self.assertContains(response, 'Pizza!?')
     self.assertContains(response, 'PizzOOO')
 
-  def test_meetup_info_is_displayed(self):
-    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    meetup.save()
-    response = self.client.get('/')
-    self.assertContains(response, "ThoughtWorks")
-    self.assertContains(response, "Fri Sep 12 04:00:00")
-    self.assertContains(response, "Hands-on session: Exploring Reactive Programming")
+  # def test_meetup_info_is_displayed(self):
+  #   meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+  #   response = self.client.get('/')
+  #   self.assertContains(response, "ThoughtWorks")
+  #   self.assertContains(response, "Fri Sep 12 04:00:00")
+  #   self.assertContains(response, "Hands-on session: Exploring Reactive Programming")
 
   def test_landing_page_contains_map_link(self):
-    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    meetup.save()
+    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
     self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
 
