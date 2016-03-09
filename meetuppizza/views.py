@@ -10,8 +10,8 @@ from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
 
 def index(request):
   meetups = Meetup.objects.all()
-  fatMeetups = MeetupInfoFetch(meetups, MeetupApiLookupAgent).fat_meetups()
-  return render(request, 'index.html', {"meetups": fatMeetups})
+  fat_meetups = MeetupInfoFetch(meetups, MeetupApiLookupAgent).fat_meetups()
+  return render(request, 'index.html', {"meetups": fat_meetups})
 
 def sign_up(request):
   if request.method == 'GET':
