@@ -35,18 +35,27 @@
   {% for meetup in meetups %}
 
     <div class="meetup">
+
       <h3 class='meetup-name'><a href="{{ meetup.meetup_link }}">{{ meetup.name }}</a></h3>
 
-      <p class='meetup-description'>{{ meetup.next_event_topic }} - {{ meetup.datetime}} at <a href="{{ meetup.map_link }}">{{ meetup.venue }}</a></p>
+      {% if meetup.next_event_topic %}
+        <div class='meetup-description'>
+          <strong class='subheader'>Next Event:</strong>
+          <p>{{ meetup.next_event_topic }} - {{ meetup.datetime}} at
+          <a href="{{ meetup.map_link }}">{{ meetup.venue }}</a></p>
+        </div>
+      {% endif %}
 
-      {% for place in meetup.pizza_places %}
-      <li class='meetup-pizza-places'>
-        {{ place }}
-      </li>
-      {% endfor %}
+      <div class='meetup-pizza-places'>
+        <strong class='subheader'>Pizzas:</strong>
+        {% for place in meetup.pizza_places %}
+        <li class='meetup-pizza-list'>
+          {{ place }}
+        </li>
+        {% endfor %}
+      </div>
 
     </div>
-
 
   {% endfor %}
 
