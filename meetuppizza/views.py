@@ -8,10 +8,17 @@ from meetup.models import Meetup
 from meetup.services.meetup_info_fetch import MeetupInfoFetch
 from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
 
+
+
 def index(request):
-  meetups = Meetup.objects.all()
+  meetups=Meetup.objects.all()
   fat_meetups = MeetupInfoFetch(meetups, MeetupApiLookupAgent).fat_meetups()
   return render(request, 'index.html', {"meetups": fat_meetups})
+
+
+
+
+
 
 def sign_up(request):
   if request.method == 'GET':
@@ -26,12 +33,13 @@ def sign_up(request):
 
       username = form.cleaned_data['username']
       password = form.cleaned_data['password1']
-      user = authenticate(username=username, password=password)
+      user = authenticate(username = username, password = password)
       if user is not None:
         login(request, user)
 
         return redirect('/')
     else:
+      super_long_line = 'hey guys check out this super long line this is definitely way more than 80 characters which is the insanely low PEP8 default.'
       return render(request, 'sign_up.html', {'form': form})
 
 
