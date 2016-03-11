@@ -18,7 +18,6 @@ params = {
       'password2':'bjornbjorn'
     }
 
-@patch('meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent')
 class TestLandingPage(TestCase):
   def setUp(self):
     self.meetup_info = {
@@ -59,37 +58,40 @@ class TestLandingPage(TestCase):
             },
           }
         }
+    self.patcher = patch('meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent')
+    self.mock_agent = self.patcher.start()
+    self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
+    self.addCleanup(self.patcher.stop)
 
-  def test_landing_page_is_there(self, mock_agent):
+  def test_landing_page_is_there(self):
     response = self.client.get('/')
     self.assertEqual(response.status_code, 200)
 
-  def test_landing_page_contains_pizza(self, mock_agent):
+  def test_landing_page_contains_pizza(self):
     response = self.client.get('/')
     self.assertContains(response, "pizza")
 
-  def test_signup_redirects_to_landing_page(self, mock_agent):
+  def test_signup_redirects_to_landing_page(self):
     response = self.client.post('/sign_up', params, follow=True)
     self.assertRedirects(response, '/')
 
-  def test_signed_in_user_email_displayed_on_home_page(self, mock_agent):
+  def test_signed_in_user_email_displayed_on_home_page(self):
     self.client.post('/sign_up', params)
     response = self.client.get('/')
     self.assertContains(response, "bjorn@bjorn.com")
 
-  def test_meetup_is_displayed_on_landing_page(self, mock_agent):
+  def test_meetup_is_displayed_on_landing_page(self):
     meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     response = self.client.get('/')
     self.assertContains(response, "The Lexington")
 
-
-  def test_meetups_pizza_places_are_displayed_on_landing_page(self, mock_agent):
+  def test_meetups_pizza_places_are_displayed_on_landing_page(self):
     meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name='Pizza!?')
     response = self.client.get('/')
     self.assertContains(response, 'Pizza!?')
 
-  def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self, mock_agent):
+  def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self):
     meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name='Pizza!?')
     meetup.pizza_places.create(name='PizzOOO')
@@ -97,23 +99,22 @@ class TestLandingPage(TestCase):
     self.assertContains(response, 'Pizza!?')
     self.assertContains(response, 'PizzOOO')
 
-  def test_next_meetup_location_displayed(self, mock_agent):
+  def test_next_meetup_location_displayed(self):
     meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
     self.assertContains(response, "The Lexington")
 
-  def test_next_meetup_time_displayed(self, mock_agent):
+  def test_next_meetup_time_displayed(self):
     meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     response = self.client.get('/')
     self.assertContains(response, "Mon May  4 08:00:00")
 
-  def test_next_meetup_title_displayed(self, mock_agent):
+  def test_next_meetup_title_displayed(self):
     meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
     self.assertContains(response, "Code &amp; Coffee")
 
-  def test_landing_page_contains_map_link(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
+  def test_landing_page_contains_map_link(self):
     meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
     self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
