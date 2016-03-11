@@ -4,6 +4,12 @@ from meetuppizza.forms import RegistrationForm
 from meetup.models import Meetup
 from pizzaplace.models import PizzaPlace
 from django.contrib import auth
+from django.shortcuts import render, redirect
+from django.test import RequestFactory
+from unittest import mock
+from unittest.mock import patch
+
+import pdb
 
 params = {
       'username':'Bjorn',
@@ -13,6 +19,49 @@ params = {
     }
 
 class TestLandingPage(TestCase):
+  def setUp(self):
+    self.meetup_info = {
+          0: {
+          "created": 1426723243000,
+          "duration": 5400000,
+          "group": {
+            "created": 1391476627000,
+            "name": "Software Craftsmanship New York",
+            "id": 12705402,
+            "join_mode": "approval",
+            "lat": 40.7599983215332,
+            "lon": -73.98999786376953,
+            "urlname": "Software-Craftsmanship-New-York",
+            "who": "craftsmen"
+          },
+          "id": "ldxfglyvfbfc",
+          "link": "http://www.meetup.com/Software-Craftsmanship-New-York/events/229387692/",
+          "name": "Code & Coffee",
+          "status": "upcoming",
+          "time": 1458730800000,
+          "updated": 1453163859000,
+          "utc_offset": -14400000,
+          "yes_rsvp_count": 1,
+          "waitlist_count": 0,
+          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better: pair programming on your pet project? This is your meetup! :) </p> <p>Skip the morning run and instead meet us between 6:30 AM and 8:30 AM bi-weekly to chat, code and have the first coffee together to start the day off with developers or other software professionals who care about the quality of the code and passionately looking for ways to improve themselves. </p> <p><b>The venue:</b> There is a Starbucks open from 5:30 am and behind it the lobby of The Lexington NYC hotel, which is a pretty cool space, they have free, fast wi-fi, plenty of seating and a lot of sockets in the wall :) I asked, and we are allowed to gather so don't be shy and have a look around. There are seats downstairs and on the mezzanine as well, upstairs, where the restrooms are too. See you there! </p> ",
+            "venue": {
+              "id": 23708903,
+              "name": "The Lexington",
+              "lat": 40.75501251220703,
+              "lon": -73.97337341308594,
+              "address_1": "511 Lexington Ave",
+              "city": "New York",
+              "country": "us",
+              "localized_country_name": "USA",
+              "zip": "",
+              "state": "NY"
+            },
+          }
+        }
+    self.patcher = patch('meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent')
+    self.mock_agent = self.patcher.start()
+    self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
+    self.addCleanup(self.patcher.stop)
 
   def test_landing_page_is_there(self):
     response = self.client.get('/')
@@ -32,40 +81,43 @@ class TestLandingPage(TestCase):
     self.assertContains(response, "bjorn@bjorn.com")
 
   def test_meetup_is_displayed_on_landing_page(self):
-    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.save()
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     response = self.client.get('/')
-    self.assertContains(response, 'new meetup')
+    self.assertContains(response, "The Lexington")
 
   def test_meetups_pizza_places_are_displayed_on_landing_page(self):
-    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.save()
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name='Pizza!?')
     response = self.client.get('/')
     self.assertContains(response, 'Pizza!?')
 
   def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self):
-    meetup = Meetup(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.save()
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name='Pizza!?')
     meetup.pizza_places.create(name='PizzOOO')
     response = self.client.get('/')
     self.assertContains(response, 'Pizza!?')
     self.assertContains(response, 'PizzOOO')
 
-  def test_meetup_info_is_displayed(self):
-    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    meetup.save()
+  def test_next_meetup_location_displayed(self):
+    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
-    self.assertContains(response, "ThoughtWorks")    
-    self.assertContains(response, "Fri Sep 12 04:00:00")    
-    self.assertContains(response, "Hands-on session: Exploring Reactive Programming")    
+    self.assertContains(response, "The Lexington")
+
+  def test_next_meetup_time_displayed(self):
+    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
+    response = self.client.get('/')
+    self.assertContains(response, "Mon May  4 08:00:00")
+
+  def test_next_meetup_title_displayed(self):
+    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
+    response = self.client.get('/')
+    self.assertContains(response, "Code &amp; Coffee")
 
   def test_landing_page_contains_map_link(self):
-    meetup = Meetup(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    meetup.save()
+    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
-    self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")    
+    self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
 
 
 class TestUserAuthentication(TestCase):
@@ -74,7 +126,6 @@ class TestUserAuthentication(TestCase):
     self.client.post('/sign_up', params)
     user = User.objects.get(username='Bjorn')
     self.assertIsNotNone(user)
-
 
   def test_user_is_logged_in_after_signup(self):
     self.client.post('/sign_up', params)

@@ -14,8 +14,7 @@ class TestPizzaPlace(TestCase):
     self.assertEquals(pizza_place.name, "Pete Zazz")
 
   def test_name_must_be_unique(self):
-    place1 = PizzaPlace(name="Such Pizza")
-    place1.save()
+    place1 = PizzaPlace.objects.create(name="Such Pizza")
     place2 = PizzaPlace(name="Such Pizza")
     self.assertRaises(IntegrityError, place2.save)
 
