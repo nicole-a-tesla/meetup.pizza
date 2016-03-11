@@ -51,6 +51,13 @@ class TestMeetup(TestCase):
     place = meetup.pizza_places.create(name="Pete Zazz")
     self.assertEquals(place, meetup.pizza_places.all()[0])
 
+class TestMeetupModelValidations(TestCase):
+
+  def setUp(self):
+    self.patcher = patch('meetup.models.MeetupApiLookupAgent')
+    self.mock_agent = self.patcher.start()
+    self.addCleanup(self.patcher.stop)
+
   def test_meetup_raises_error_on_invalid_url(self):
     meetup= Meetup(name="Meeetup1", meetup_link='hi/ok/what')
     self.assertRaises(ValidationError, meetup.full_clean)
@@ -82,6 +89,7 @@ class TestMeetup(TestCase):
     self.assertIsNone(errors_raiesed_by_meetup)
 
   def test_non_real_meetup_raises_validation_error(self):
+    self.mock_agent.return_value.is_real_meetup.return_value = False
     meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
