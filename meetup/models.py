@@ -15,9 +15,7 @@ def validate_urlname(link):
 def validate_meetup_exists(link):
   if not MeetupApiLookupAgent(link).meetup_exists():
     raise ValidationError("Meetup not found on meetup.com")
-
-
-
+    
 
 class Meetup(TimeStampedModel):
   name = models.CharField(max_length=500, null=False, blank=False, default=None, unique=True)
