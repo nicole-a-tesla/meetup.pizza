@@ -4,7 +4,7 @@ from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
 from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
-from meetup.services.meetup_info_fetch import MeetupInfoFetch
+from meetup.services.meetup_info_fetch import FetchMeetupInfo
 from unittest import mock
 from unittest.mock import patch
 
@@ -130,7 +130,7 @@ class TestMeetupApi(TestCase):
     return MeetupApiLookupAgent(link)
 
 @patch("meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent")
-class TestMeetupInfoFetch(TestCase):
+class TestFetchMeetupInfo(TestCase):
 
   def create_meetup_with_associated_pizza(self):
     meetup = Meetup.objects.create(name="Meeetup1", meetup_link='http://www.meetup.com/papers-we-love/')
@@ -181,27 +181,27 @@ class TestMeetupInfoFetch(TestCase):
 
   def test_returns_meetup_collection(self, mock_agent):
     mock_agent.return_value.get_response.return_value.json.return_value = self.info
-    i_fetch = MeetupInfoFetch([self.meetup], mock_agent)
+    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEqual(self.meetup.name, i_fetch.fat_meetups()[0]['name'])
 
   def test_fat_meetups_returns_event_venue_name(self, mock_agent):
     mock_agent.return_value.get_response.return_value.json.return_value = self.info
-    i_fetch = MeetupInfoFetch([self.meetup], mock_agent)
+    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals("The Lexington", i_fetch.fat_meetups()[0]['venue'])
 
   def test_fat_meetups_returns_next_event_topic(self, mock_agent):
     mock_agent.return_value.get_response.return_value.json.return_value = self.info
-    i_fetch = MeetupInfoFetch([self.meetup], mock_agent)
+    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals('Code & Coffee', i_fetch.fat_meetups()[0]['next_event_topic'])
 
   def test_fat_meetups_returns_next_event_time(self, mock_agent):
     mock_agent.return_value.get_response.return_value.json.return_value = self.info
-    i_fetch = MeetupInfoFetch([self.meetup], mock_agent)
+    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals('Mon May  4 08:00:00', i_fetch.fat_meetups()[0]['datetime'])
 
   def test_fat_meetups_returns_map_link(self, mock_agent):
     mock_agent.return_value.get_response.return_value.json.return_value = self.info
-    i_fetch = MeetupInfoFetch([self.meetup], mock_agent)
+    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals("https://www.google.com/maps?q=40.7599983215332,-73.98999786376953", i_fetch.fat_meetups()[0]['map_link'])
 
 

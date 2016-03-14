@@ -2,7 +2,7 @@ from django.db import models
 from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
 import time
 
-class MeetupInfoFetch():
+class FetchMeetupInfo():
   def __init__(self, meetups, lookup_agent):
     self.lookup_agent = lookup_agent
     self.meetups = meetups

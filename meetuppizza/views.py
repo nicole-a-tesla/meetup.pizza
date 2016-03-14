@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from meetuppizza.forms import RegistrationForm
 from meetup.models import Meetup
-from meetup.services.meetup_info_fetch import MeetupInfoFetch
+from meetup.services.meetup_info_fetch import FetchMeetupInfo
 from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
 
 def index(request):
   meetups = Meetup.objects.all()
-  fat_meetups = MeetupInfoFetch(meetups, MeetupApiLookupAgent).fat_meetups()
+  fat_meetups = FetchMeetupInfo(meetups, MeetupApiLookupAgent).fat_meetups()
   return render(request, 'index.html', {"meetups": fat_meetups})
 
 def sign_up(request):
