@@ -8,6 +8,9 @@ class MeetupApiLookupAgent():
     self.link = link
 
   def get_response(self, category=''):
+    print("~~~~~~~~~~~~~~")
+    print("HIT THE API")
+    print("~~~~~~~~~~~~~~")
     api_url = "https://api.meetup.com/" + self.get_urlname() + '/' + category
     url_components = {"key": os.getenv("MEETUP_KEY")}
 
