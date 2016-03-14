@@ -60,7 +60,7 @@ class TestLandingPage(TestCase):
             },
           }
         }
-    self.patcher = patch('meetuppizza.views.MeetupApiLookupAgent')
+    self.patcher = patch('meetuppizza.views.MeetupApi')
     self.mock_agent = self.patcher.start()
     self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
     self.meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')

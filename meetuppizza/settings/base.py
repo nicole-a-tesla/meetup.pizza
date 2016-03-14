@@ -29,6 +29,8 @@ SECRET_KEY = 'secret!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+MEETUP_KEY = os.getenv("MEETUP_KEY")
+
 # Application definition
 
 INSTALLED_APPS = (

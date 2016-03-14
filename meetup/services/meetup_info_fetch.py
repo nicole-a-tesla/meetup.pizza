@@ -1,5 +1,5 @@
 from django.db import models
-from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
+from meetup.services.meetup_api import MeetupApi
 import time
 
 class FetchMeetupInfo():

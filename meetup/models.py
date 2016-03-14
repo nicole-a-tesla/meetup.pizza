@@ -1,7 +1,7 @@
 from django.db import models
 from pizzaplace.models import PizzaPlace
 from django.core.validators import RegexValidator
-from meetup.services.meetup_api_lookup_agent import MeetupApi
+from meetup.services.meetup_api import MeetupApi
 from django.core.exceptions import ValidationError
 from model_utils.models import TimeStampedModel
 

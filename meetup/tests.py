@@ -3,7 +3,7 @@ from meetup.models import Meetup
 from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
-from meetup.services.meetup_api_lookup_agent import MeetupApiLookupAgent
+from meetup.services.meetup_api import MeetupApi
 from meetup.services.meetup_info_fetch import FetchMeetupInfo
 from unittest import mock
 from unittest.mock import patch
@@ -54,7 +54,7 @@ class TestMeetup(TestCase):
 class TestMeetupModelValidations(TestCase):
 
   def setUp(self):
-    self.patcher = patch('meetup.models.MeetupApiLookupAgent')
+    self.patcher = patch('meetup.models.MeetupApi')
     self.mock_agent = self.patcher.start()
 
   def test_meetup_raises_error_on_invalid_url(self):
@@ -130,9 +130,9 @@ class TestMeetupApi(TestCase):
     self.assertEqual(response.status_code, 200)
 
   def lookup_agent_builder(self, link):
-    return MeetupApiLookupAgent(link)
+    return MeetupApi(link)
 
-@patch("meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent")
+@patch("meetup.services.meetup_api.MeetupApi")
 class TestFetchMeetupInfo(TestCase):
 
   def create_meetup_with_associated_pizza(self):
