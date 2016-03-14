@@ -49,7 +49,7 @@ class TestMeetup(TestCase):
   def test_getting_all_associated_pizzas(self):
     meetup= Meetup.objects.create(name="Meeetup1", meetup_link='http://meetup.com/some-meetup')
     place = meetup.pizza_places.create(name="Pete Zazz")
-    self.assertEquals(place, meetup.pizza_places.all()[0])
+    self.assertEquals(place, meetup.pizza_places.first())
 
 class TestMeetupModelValidations(TestCase):
 

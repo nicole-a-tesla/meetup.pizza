@@ -11,8 +11,6 @@ from unittest.mock import patch
 from meetuppizza.views import index
 from django.test import RequestFactory
 
-import pdb
-
 params = {
       'username':'Bjorn',
       'email':'bjorn@bjorn.com',
