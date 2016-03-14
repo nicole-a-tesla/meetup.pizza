@@ -1,8 +1,8 @@
 from django.db import models
+from model_utils.models import TimeStampedModel
 
-# Create your models here.
-class PizzaPlace(models.Model):
+class PizzaPlace(TimeStampedModel):
   name = models.CharField(max_length=500, unique=True, default=None)
 
   def __str__(self):
-    return self.name 
+    return self.name
