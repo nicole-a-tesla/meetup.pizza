@@ -32,7 +32,7 @@ class TestMeetup(TestCase):
     meetup = Meetup(name=name, meetup_link='http://meetup.com/some-meetup')
     self.assertRaises(DataError, meetup.save)
 
-  def test_string_representation_of_meetup(self):
+  def test_string_representation_of_meetup_is_its_name(self):
     m = Meetup(name="Mr. Meetup", meetup_link='http://meetup.com/some-other-meetup')
     self.assertEquals("Mr. Meetup", str(m))
 
