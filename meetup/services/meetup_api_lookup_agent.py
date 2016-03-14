@@ -8,15 +8,12 @@ class MeetupApiLookupAgent():
     self.link = link
 
   def get_response(self, category=''):
-    print("~~~~~~~~~~~~~~")
-    print("HIT THE API")
-    print("~~~~~~~~~~~~~~")
     api_url = "https://api.meetup.com/" + self.get_urlname() + '/' + category
     url_components = {"key": os.getenv("MEETUP_KEY")}
 
     return requests.get(api_url, params=url_components)
 
-  def is_real_meetup(self):
+  def meetup_exists(self):
     return self.get_response().status_code == 200
 
 

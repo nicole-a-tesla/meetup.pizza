@@ -88,7 +88,7 @@ class TestMeetupModelValidations(TestCase):
     self.assertIsNone(errors_raiesed_by_meetup)
 
   def test_non_real_meetup_raises_validation_error(self):
-    self.mock_agent.return_value.is_real_meetup.return_value = False
+    self.mock_agent.return_value.meetup_exists.return_value = False
     meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
@@ -116,12 +116,12 @@ class TestMeetupApi(TestCase):
 
   def test_validator_returns_true_for_valid_url(self):
     lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-    is_valid = lookup_agent.is_real_meetup()
+    is_valid = lookup_agent.meetup_exists()
     self.assertTrue(is_valid)
 
   def test_validator_returns_false_for_invalid_url(self):
     lookup_agent = self.lookup_agent_builder("http://meetup.com/this-is-not-a-meetup/")
-    is_valid = lookup_agent.is_real_meetup()
+    is_valid = lookup_agent.meetup_exists()
     self.assertFalse(is_valid)
 
   def test_events_lookup_returns_event(self):
