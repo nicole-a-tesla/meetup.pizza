@@ -43,7 +43,7 @@ class TestLandingPage(TestCase):
           "utc_offset": -14400000,
           "yes_rsvp_count": 1,
           "waitlist_count": 0,
-          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better: pair programming on your pet project? This is your meetup! :) </p> <p>Skip the morning run and instead meet us between 6:30 AM and 8:30 AM bi-weekly to chat, code and have the first coffee together to start the day off with developers or other software professionals who care about the quality of the code and passionately looking for ways to improve themselves. </p> <p><b>The venue:</b> There is a Starbucks open from 5:30 am and behind it the lobby of The Lexington NYC hotel, which is a pretty cool space, they have free, fast wi-fi, plenty of seating and a lot of sockets in the wall :) I asked, and we are allowed to gather so don't be shy and have a look around. There are seats downstairs and on the mezzanine as well, upstairs, where the restrooms are too. See you there! </p> ",
+          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better",
             "venue": {
               "id": 23708903,
               "name": "The Lexington",
@@ -61,7 +61,7 @@ class TestLandingPage(TestCase):
     self.patcher = patch('meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent')
     self.mock_agent = self.patcher.start()
     self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
-    self.addCleanup(self.patcher.stop)
+    
 
   def test_landing_page_is_there(self):
     response = self.client.get('/')
@@ -118,6 +118,9 @@ class TestLandingPage(TestCase):
     meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
     response = self.client.get('/')
     self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
+
+  def tearDown(self):
+    self.addCleanup(self.patcher.stop)
 
 
 class TestUserAuthentication(TestCase):

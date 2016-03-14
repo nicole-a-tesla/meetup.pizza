@@ -56,7 +56,6 @@ class TestMeetupModelValidations(TestCase):
   def setUp(self):
     self.patcher = patch('meetup.models.MeetupApiLookupAgent')
     self.mock_agent = self.patcher.start()
-    self.addCleanup(self.patcher.stop)
 
   def test_meetup_raises_error_on_invalid_url(self):
     meetup= Meetup(name="Meeetup1", meetup_link='hi/ok/what')
@@ -92,6 +91,10 @@ class TestMeetupModelValidations(TestCase):
     self.mock_agent.return_value.is_real_meetup.return_value = False
     meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
+
+  def tearDown(self):
+    self.addCleanup(self.patcher.stop)
+
 
 class TestMeetupApi(TestCase):
 
@@ -163,7 +166,7 @@ class TestFetchMeetupInfo(TestCase):
           "utc_offset": -14400000,
           "yes_rsvp_count": 1,
           "waitlist_count": 0,
-          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better: pair programming on your pet project? This is your meetup! :) </p> <p>Skip the morning run and instead meet us between 6:30 AM and 8:30 AM bi-weekly to chat, code and have the first coffee together to start the day off with developers or other software professionals who care about the quality of the code and passionately looking for ways to improve themselves. </p> <p><b>The venue:</b> There is a Starbucks open from 5:30 am and behind it the lobby of The Lexington NYC hotel, which is a pretty cool space, they have free, fast wi-fi, plenty of seating and a lot of sockets in the wall :) I asked, and we are allowed to gather so don't be shy and have a look around. There are seats downstairs and on the mezzanine as well, upstairs, where the restrooms are too. See you there! </p> ",
+          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better",
             "venue": {
               "id": 23708903,
               "name": "The Lexington",
