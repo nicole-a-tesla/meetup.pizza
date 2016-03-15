@@ -5,6 +5,7 @@ from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
 from meetup.services.meetup_api import MeetupApi
 from meetup.services.meetup_info_fetch import FetchMeetupInfo
+from meetup.services.meetup_presenter import MeetupPresenter
 from unittest import mock
 from unittest.mock import patch
 
@@ -47,7 +48,7 @@ class TestMeetup(TestCase):
     self.assertRaises(IntegrityError, n.save)
 
   def test_getting_all_associated_pizzas(self):
-    meetup= Meetup.objects.create(name="Meeetup1", meetup_link='http://meetup.com/some-meetup')
+    meetup= Meetup.objects.create(name="Meetup1", meetup_link='http://meetup.com/some-meetup')
     place = meetup.pizza_places.create(name="Pete Zazz")
     self.assertEquals(place, meetup.pizza_places.first())
 
@@ -58,38 +59,38 @@ class TestMeetupModelValidations(TestCase):
     self.mock_agent = self.patcher.start()
 
   def test_meetup_raises_error_on_invalid_url(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='hi/ok/what')
+    meetup= Meetup(name="Meetup1", meetup_link='hi/ok/what')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_link_does_not_point_to_meetupdotcom(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.example.com/')
+    meetup= Meetup(name="Meetup1", meetup_link='http://www.example.com/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_no_urlname_in_meetup_url(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/')
+    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_no_trailing_slash_in_meetup_url(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/hackerhours')
+    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/hackerhours')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_multiple_urlnames(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/hackerhours/events/')
+    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/hackerhours/events/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_meetup_url_with_urlname_and_trailing_slash_passes(self):
-    meetup= Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/hackerhours/')
+    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/hackerhours/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertTrue(errors_raiesed_by_meetup == None)
 
   def test_url_with_dashes_in_urlname_passes(self):
-    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+    meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertIsNone(errors_raiesed_by_meetup)
 
   def test_non_real_meetup_raises_validation_error(self):
     self.mock_agent.return_value.meetup_exists.return_value = False
-    meetup = Meetup(name="Meeetup1", meetup_link='http://www.meetup.com/la-la-la/')
+    meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def tearDown(self):
@@ -136,7 +137,7 @@ class TestMeetupApi(TestCase):
 class TestFetchMeetupInfo(TestCase):
 
   def create_meetup_with_associated_pizza(self):
-    meetup = Meetup.objects.create(name="Meeetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+    meetup = Meetup.objects.create(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
     meetup.pizza_places.create(name="PizZap")
     return meetup
 
@@ -206,5 +207,47 @@ class TestFetchMeetupInfo(TestCase):
     mock_agent.return_value.get_response.return_value.json.return_value = self.info
     i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals("https://www.google.com/maps?q=40.7599983215332,-73.98999786376953", i_fetch.fat_meetups()[0]['map_link'])
+
+
+class TestMeetupPresenter(TestCase):
+
+  def setUp(self):
+    self.info = {'venue'            : 'Some place',
+                 'next_event_topic' : 'awesome stuff',
+                 'datetime'         : 1426723243000,
+                 'lat'              : 40.75501251220703,
+                 'lon'              : -73.97337341308594}
+    self.meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+
+  def test_meetup_presenter_returns_meetup_link(self):
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_link(), 'http://www.meetup.com/papers-we-love/')
+
+  def test_meetup_presenter_returns_meetup_name(self):
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_name(), 'Meetup1')
+
+  def test_meetup_presenter_returns_meetup_venue(self):
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_venue(), 'Some place')
+
+  def test_meetup_presenter_returns_meetup_next_topic(self):
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_next_event_topic(), 'awesome stuff')
+
+  def test_meetup_presenter_returns_meetup_datetime(self):
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_datetime(), "Thu Jan 22 11:56:40")
+
+  def test_meetup_presenter_returns_meetup_map_link(self):
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_map_link(), "https://www.google.com/maps?q=40.75501251220703,-73.97337341308594")
+
+  @patch("meetup.services.meetup_api.MeetupApi")
+  def test_meetup_presenter_returns_pizza_places(self, fake_api):
+    self.meetup.save()
+    pizza_place = self.meetup.pizza_places.create(name="Pizza place")
+    presenter = MeetupPresenter(self.meetup, self.info)
+    self.assertEquals(presenter.get_meetup_pizza_places().first(), pizza_place)
 
 
