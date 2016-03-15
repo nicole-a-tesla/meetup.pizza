@@ -6,8 +6,50 @@ from django.core.exceptions import ValidationError
 from meetup.services.meetup_api import MeetupApi
 from meetup.services.meetup_info_fetch import FetchMeetupInfo
 from meetup.services.meetup_presenter import MeetupPresenter
+from meetup.services import meetup_api_response_parser
 from unittest import mock
 from unittest.mock import patch
+
+
+meetup_api_response = {
+      0: {
+      "created": 1426723243000,
+      "duration": 5400000,
+      "group": {
+        "created": 1391476627000,
+        "name": "Software Craftsmanship New York",
+        "id": 12705402,
+        "join_mode": "approval",
+        "lat": 40.7599983215332,
+        "lon": -73.98999786376953,
+        "urlname": "Software-Craftsmanship-New-York",
+        "who": "craftsmen"
+      },
+      "id": "ldxfglyvfbfc",
+      "link": "http://www.meetup.com/Software-Craftsmanship-New-York/events/229387692/",
+      "name": "Code & Coffee",
+      "status": "upcoming",
+      "time": 1458730800000,
+      "updated": 1453163859000,
+      "utc_offset": -14400000,
+      "yes_rsvp_count": 1,
+      "waitlist_count": 0,
+      "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better",
+        "venue": {
+          "id": 23708903,
+          "name": "The Lexington",
+          "lat": 40.75501251220703,
+          "lon": -73.97337341308594,
+          "address_1": "511 Lexington Ave",
+          "city": "New York",
+          "country": "us",
+          "localized_country_name": "USA",
+          "zip": "",
+          "state": "NY"
+        },
+      }
+    }
+
 
 class TestMeetup(TestCase):
 
@@ -144,67 +186,28 @@ class TestFetchMeetupInfo(TestCase):
   def setUp(self):
     self.meetup = self.create_meetup_with_associated_pizza()
 
-    self.info = {
-          0: {
-          "created": 1426723243000,
-          "duration": 5400000,
-          "group": {
-            "created": 1391476627000,
-            "name": "Software Craftsmanship New York",
-            "id": 12705402,
-            "join_mode": "approval",
-            "lat": 40.7599983215332,
-            "lon": -73.98999786376953,
-            "urlname": "Software-Craftsmanship-New-York",
-            "who": "craftsmen"
-          },
-          "id": "ldxfglyvfbfc",
-          "link": "http://www.meetup.com/Software-Craftsmanship-New-York/events/229387692/",
-          "name": "Code & Coffee",
-          "status": "upcoming",
-          "time": 1458730800000,
-          "updated": 1453163859000,
-          "utc_offset": -14400000,
-          "yes_rsvp_count": 1,
-          "waitlist_count": 0,
-          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better",
-            "venue": {
-              "id": 23708903,
-              "name": "The Lexington",
-              "lat": 40.75501251220703,
-              "lon": -73.97337341308594,
-              "address_1": "511 Lexington Ave",
-              "city": "New York",
-              "country": "us",
-              "localized_country_name": "USA",
-              "zip": "",
-              "state": "NY"
-            },
-          }
-        }
-
   def test_returns_meetup_collection(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = self.info
+    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
     i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEqual(self.meetup.name, i_fetch.fat_meetups()[0]['name'])
 
   def test_fat_meetups_returns_event_venue_name(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = self.info
+    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
     i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals("The Lexington", i_fetch.fat_meetups()[0]['venue'])
 
   def test_fat_meetups_returns_next_event_topic(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = self.info
+    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
     i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals('Code & Coffee', i_fetch.fat_meetups()[0]['next_event_topic'])
 
   def test_fat_meetups_returns_next_event_time(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = self.info
+    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
     i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals('Mon May  4 08:00:00', i_fetch.fat_meetups()[0]['datetime'])
 
   def test_fat_meetups_returns_map_link(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = self.info
+    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
     i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
     self.assertEquals("https://www.google.com/maps?q=40.7599983215332,-73.98999786376953", i_fetch.fat_meetups()[0]['map_link'])
 
@@ -251,3 +254,17 @@ class TestMeetupPresenter(TestCase):
     self.assertEquals(presenter.get_meetup_pizza_places().first(), pizza_place)
 
 
+class TestMeetupApiResponseParser(TestCase):
+
+  def test_parsed_response_contains_venue(self):
+    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('venue'), 'The Lexington')
+
+  def test_parsed_response_contains_event_topic(self):
+    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('next_event_topic'), 'Code & Coffee')
+
+  def test_parsed_response_contains_event_datetime(self):
+    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('datetime'), 1458730800000)
+
+  def test_parsed_response_contains_lat_and_long(self):
+    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('lat'), 40.7599983215332)
+    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('lon'), -73.98999786376953)
