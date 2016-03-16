@@ -131,7 +131,7 @@ class TestMeetupModelValidations(TestCase):
     self.assertIsNone(errors_raiesed_by_meetup)
 
   def test_non_real_meetup_raises_validation_error(self):
-    self.mock_agent.return_value.meetup_exists.return_value = False
+    self.mock_agent.return_value.url_exists.return_value = False
     meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
@@ -146,12 +146,6 @@ class TestMeetupApi(TestCase):
     urlname = lookup_agent.get_urlname()
     self.assertEquals("Hello-Pizza", urlname)
 
-  def test_valid_url_returns_json_with_matching_name_attribute(self):
-    lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-    response = lookup_agent.get_response()
-    meetup_name = response.json()['name']
-    self.assertEqual(meetup_name, 'Papers We Love')
-
   def test_invalid_url_returns_404(self):
     lookup_agent = self.lookup_agent_builder("http://meetup.com/NONSENSE-NOTHING/")
     response = lookup_agent.get_response()
@@ -159,17 +153,17 @@ class TestMeetupApi(TestCase):
 
   def test_validator_returns_true_for_valid_url(self):
     lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-    is_valid = lookup_agent.meetup_exists()
+    is_valid = lookup_agent.url_exists()
     self.assertTrue(is_valid)
 
   def test_validator_returns_false_for_invalid_url(self):
     lookup_agent = self.lookup_agent_builder("http://meetup.com/this-is-not-a-meetup/")
-    is_valid = lookup_agent.meetup_exists()
+    is_valid = lookup_agent.url_exists()
     self.assertFalse(is_valid)
 
   def test_events_lookup_returns_event(self):
     lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-    response = lookup_agent.get_response('events')
+    response = lookup_agent.get_response()
     self.assertEqual(response.status_code, 200)
 
   def lookup_agent_builder(self, link):
