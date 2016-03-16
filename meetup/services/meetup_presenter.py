@@ -15,7 +15,7 @@ class MeetupPresenter():
     return self.api_response_info['venue']
 
   def get_meetup_next_event_topic(self):
-    return self.api_response_info['next_event_topic']
+    return self.api_response_info.get('next_event_topic')
 
   def get_meetup_datetime(self):
     time_string = self.api_response_info['datetime']

@@ -4,15 +4,15 @@ from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
 from meetup.services.meetup_api import MeetupApi
-from meetup.services.meetup_info_fetch import FetchMeetupInfo
 from meetup.services.meetup_presenter import MeetupPresenter
 from meetup.services import meetup_api_response_parser
 from unittest import mock
+from unittest.mock import MagicMock
 from unittest.mock import patch
+from django.http import HttpResponse
 
 
-meetup_api_response = {
-      0: {
+meetup_api_response = [{
       "created": 1426723243000,
       "duration": 5400000,
       "group": {
@@ -48,7 +48,7 @@ meetup_api_response = {
           "state": "NY"
         },
       }
-    }
+    ]
 
 
 class TestMeetup(TestCase):
@@ -175,42 +175,6 @@ class TestMeetupApi(TestCase):
   def lookup_agent_builder(self, link):
     return MeetupApi(link)
 
-@patch("meetup.services.meetup_api.MeetupApi")
-class TestFetchMeetupInfo(TestCase):
-
-  def create_meetup_with_associated_pizza(self):
-    meetup = Meetup.objects.create(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.pizza_places.create(name="PizZap")
-    return meetup
-
-  def setUp(self):
-    self.meetup = self.create_meetup_with_associated_pizza()
-
-  def test_returns_meetup_collection(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
-    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
-    self.assertEqual(self.meetup.name, i_fetch.fat_meetups()[0]['name'])
-
-  def test_fat_meetups_returns_event_venue_name(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
-    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
-    self.assertEquals("The Lexington", i_fetch.fat_meetups()[0]['venue'])
-
-  def test_fat_meetups_returns_next_event_topic(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
-    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
-    self.assertEquals('Code & Coffee', i_fetch.fat_meetups()[0]['next_event_topic'])
-
-  def test_fat_meetups_returns_next_event_time(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
-    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
-    self.assertEquals('Mon May  4 08:00:00', i_fetch.fat_meetups()[0]['datetime'])
-
-  def test_fat_meetups_returns_map_link(self, mock_agent):
-    mock_agent.return_value.get_response.return_value.json.return_value = meetup_api_response
-    i_fetch = FetchMeetupInfo([self.meetup], mock_agent)
-    self.assertEquals("https://www.google.com/maps?q=40.7599983215332,-73.98999786376953", i_fetch.fat_meetups()[0]['map_link'])
-
 
 class TestMeetupPresenter(TestCase):
 
@@ -255,16 +219,19 @@ class TestMeetupPresenter(TestCase):
 
 
 class TestMeetupApiResponseParser(TestCase):
+  def setUp(self):
+    self.mockResponse = HttpResponse()
+    self.mockResponse.json = MagicMock(return_value=meetup_api_response)
 
   def test_parsed_response_contains_venue(self):
-    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('venue'), 'The Lexington')
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('venue'), 'The Lexington')
 
   def test_parsed_response_contains_event_topic(self):
-    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('next_event_topic'), 'Code & Coffee')
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('next_event_topic'), 'Code & Coffee')
 
   def test_parsed_response_contains_event_datetime(self):
-    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('datetime'), 1458730800000)
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('datetime'), 1458730800000)
 
   def test_parsed_response_contains_lat_and_long(self):
-    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('lat'), 40.7599983215332)
-    self.assertEquals(meetup_api_response_parser.parse(meetup_api_response).get('lon'), -73.98999786376953)
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lat'), 40.7599983215332)
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lon'), -73.98999786376953)
