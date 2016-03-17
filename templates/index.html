@@ -50,7 +50,7 @@
         <strong class='subheader'>Pizzas:</strong>
         {% for pizza_place in meetup.get_meetup_pizza_places %}
         <li class='meetup-pizza-list'>
-          {{ pizza_place }}
+          {{ pizza_place.get_pizza_place_name }} {{ pizza_place.get_pizza_place_rating }}
         </li>
         {% endfor %}
       </div>

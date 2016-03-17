@@ -1,9 +1,11 @@
 import time
+from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
+from pizzaplace.services.yelp_api import YelpApi
 
 class MeetupPresenter():
-  def __init__(self, meetup, api_response_info):
+  def __init__(self, meetup, meetup_api, api_response_parser):
     self.meetup = meetup
-    self.api_response_info = api_response_info
+    self.parsed_api_response = self.get_api_response(meetup_api, api_response_parser)
 
   def get_meetup_link(self):
     return self.meetup.meetup_link
@@ -12,20 +14,29 @@ class MeetupPresenter():
     return self.meetup.name
 
   def get_meetup_venue(self):
-    return self.api_response_info['venue']
+    return self.parsed_api_response.get('venue')
 
   def get_meetup_next_event_topic(self):
-    return self.api_response_info.get('next_event_topic')
+    return self.parsed_api_response.get('next_event_topic')
 
   def get_meetup_datetime(self):
-    time_string = self.api_response_info['datetime']
+    time_string = self.parsed_api_response.get('datetime')
     return time.ctime(int(time_string))[:-6]
 
   def get_meetup_map_link(self):
-    lat = self.api_response_info['lat']
-    lon = self.api_response_info['lon']
+    lat = self.parsed_api_response.get('lat')
+    lon = self.parsed_api_response.get('lon')
     return "https://www.google.com/maps?q=%s,%s" % (lat, lon)
 
   def get_meetup_pizza_places(self):
-    return self.meetup.pizza_places.all()
+    pizza_place_presenters = []
+    for pizza_place in self.meetup.pizza_places.all():
+      pizza_place_presenters.append(PizzaPlacePresenter(pizza_place, YelpApi))
+    return pizza_place_presenters
+
+  def get_api_response(self, meetup_api, api_response_parser):
+    response = meetup_api(self.meetup.meetup_link).get_response()
+    return api_response_parser.parse(response)
+
+
 

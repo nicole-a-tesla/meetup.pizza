@@ -13,11 +13,7 @@ def index(request):
   meetups = Meetup.objects.all()
   meetup_presenters = []
   for meetup in meetups:
-    response = MeetupApi(meetup.meetup_link).get_response()
-
-    parsed_response = meetup_api_response_parser.parse(response)
-    meetup_presenters.append(MeetupPresenter(meetup, parsed_response))
-
+    meetup_presenters.append(MeetupPresenter(meetup, MeetupApi, meetup_api_response_parser))
   return render(request, 'index.html', {"meetups": meetup_presenters})
 
 def sign_up(request):

@@ -88,6 +88,11 @@ class TestLandingPage(TestCase):
     self.assertContains(response, 'Pizza!?')
     self.assertContains(response, 'PizzOOO')
 
+  def test_meetups_pizza_places_ratings_are_displayed_on_landing_page(self):
+    self.meetup.pizza_places.create(name='Prince', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
+    response = index(self.request)
+    self.assertContains(response, '🍕🍕🍕🍕')
+
   def test_next_meetup_location_displayed(self):
     response = index(self.request)
     self.assertContains(response, "The Lexington")
