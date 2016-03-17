@@ -4,6 +4,7 @@ from pizzaplace.models import PizzaPlace
 from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
 from meetup.services.meetup_api import MeetupApi
+from meetup.services.yelp_api import YelpApi
 from meetup.services.meetup_presenter import MeetupPresenter
 from meetup.services import meetup_api_response_parser
 from unittest import mock
@@ -143,7 +144,7 @@ class TestMeetupApi(TestCase):
 
   def test_can_parse_out_urlname(self):
     lookup_agent = self.lookup_agent_builder("https://meetup.com/Hello-Pizza/")
-    urlname = lookup_agent.get_urlname()
+    urlname = lookup_agent.get_unique_id()
     self.assertEquals("Hello-Pizza", urlname)
 
   def test_invalid_url_returns_404(self):
@@ -161,13 +162,36 @@ class TestMeetupApi(TestCase):
     is_valid = lookup_agent.url_exists()
     self.assertFalse(is_valid)
 
-  def test_events_lookup_returns_event(self):
-    lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-    response = lookup_agent.get_response()
-    self.assertEqual(response.status_code, 200)
-
   def lookup_agent_builder(self, link):
     return MeetupApi(link)
+
+
+class TestYelpApi(TestCase):
+
+  def test_can_parse_out_business_id(self):
+    lookup_agent = YelpApi('https://www.yelp.com/biz/prince-st-pizza-new-york')
+    business_id = lookup_agent.get_unique_id()
+    self.assertEquals('prince-st-pizza-new-york', business_id)
+
+  def test_can_parse_out_business_id_from_search_url(self):
+    lookup_agent = YelpApi('https://www.yelp.com/biz/prince-st-pizza-new-york?osq=prince+street+pizza')
+    business_id = lookup_agent.get_unique_id()
+    self.assertEquals('prince-st-pizza-new-york', business_id)
+
+  def test_invalid_link_returns_400(self):
+    lookup_agent = YelpApi('https://www.yelp.com/biz/not-a-real-place')
+    response = lookup_agent.get_response()
+    self.assertEquals(400, response.status_code)
+
+  def test_validator_returns_true_for_valid_url(self):
+    lookup_agent = YelpApi("https://www.yelp.com/biz/prince-st-pizza-new-york")
+    is_valid = lookup_agent.url_exists()
+    self.assertTrue(is_valid)
+
+  def test_validator_returns_false_for_invalid_url(self):
+    lookup_agent = YelpApi("https://www.yelp.com/biz/this-is-not-a-meetup")
+    is_valid = lookup_agent.url_exists()
+    self.assertFalse(is_valid)
 
 
 class TestMeetupPresenter(TestCase):
