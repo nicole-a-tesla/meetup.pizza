@@ -13,6 +13,8 @@ import os
 import psycopg2
 import dj_database_url
 from unipath import Path
+import requests
+from requests_oauthlib import OAuth1
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +30,15 @@ PROJECT_ROOT = BASE_DIR.child("meetuppizza")
 SECRET_KEY = 'secret!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+
+MEETUP_KEY = os.getenv("MEETUP_KEY")
+YELP_OAUTH_OBJECT = OAuth1(
+          os.getenv('YELP_CONSUMER_KEY'),
+          os.getenv('YELP_CONSUMER_SECRET'),
+          os.getenv('YELP_TOKEN'),
+          os.getenv('YELP_TOKEN_SECRET')
+      )
+
 
 # Application definition
 

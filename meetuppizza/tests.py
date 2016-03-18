@@ -3,13 +3,16 @@ from django.contrib.auth.models import User
 from meetuppizza.forms import RegistrationForm
 from meetup.models import Meetup
 from pizzaplace.models import PizzaPlace
+from meetup.services.meetup_api import MeetupApi
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.test import RequestFactory
 from unittest import mock
 from unittest.mock import patch
+from meetuppizza.views import index
+from django.test import RequestFactory
+from meetup.services import meetup_api_response_parser
 
-import pdb
 
 params = {
       'username':'Bjorn',
@@ -20,8 +23,8 @@ params = {
 
 class TestLandingPage(TestCase):
   def setUp(self):
-    self.meetup_info = {
-          0: {
+    self.meetup_info = [
+        {
           "created": 1426723243000,
           "duration": 5400000,
           "group": {
@@ -43,7 +46,7 @@ class TestLandingPage(TestCase):
           "utc_offset": -14400000,
           "yes_rsvp_count": 1,
           "waitlist_count": 0,
-          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better: pair programming on your pet project? This is your meetup! :) </p> <p>Skip the morning run and instead meet us between 6:30 AM and 8:30 AM bi-weekly to chat, code and have the first coffee together to start the day off with developers or other software professionals who care about the quality of the code and passionately looking for ways to improve themselves. </p> <p><b>The venue:</b> There is a Starbucks open from 5:30 am and behind it the lobby of The Lexington NYC hotel, which is a pretty cool space, they have free, fast wi-fi, plenty of seating and a lot of sockets in the wall :) I asked, and we are allowed to gather so don't be shy and have a look around. There are seats downstairs and on the mezzanine as well, upstairs, where the restrooms are too. See you there! </p> ",
+          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better",
             "venue": {
               "id": 23708903,
               "name": "The Lexington",
@@ -57,67 +60,59 @@ class TestLandingPage(TestCase):
               "state": "NY"
             },
           }
-        }
-    self.patcher = patch('meetup.services.meetup_api_lookup_agent.MeetupApiLookupAgent')
+        ]
+    self.patcher = patch('meetuppizza.views.MeetupApi')
     self.mock_agent = self.patcher.start()
     self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
-    self.addCleanup(self.patcher.stop)
+    self.meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
+    self.meetup.pizza_places.create(name='Prince', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
+    self.request = RequestFactory().get("/")
 
-  def test_landing_page_is_there(self):
-    response = self.client.get('/')
-    self.assertEqual(response.status_code, 200)
 
   def test_landing_page_contains_pizza(self):
-    response = self.client.get('/')
+    response = index(self.request)
     self.assertContains(response, "pizza")
 
-  def test_signup_redirects_to_landing_page(self):
-    response = self.client.post('/sign_up', params, follow=True)
-    self.assertRedirects(response, '/')
-
-  def test_signed_in_user_email_displayed_on_home_page(self):
-    self.client.post('/sign_up', params)
-    response = self.client.get('/')
-    self.assertContains(response, "bjorn@bjorn.com")
-
   def test_meetup_is_displayed_on_landing_page(self):
-    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    response = self.client.get('/')
+    response = index(self.request)
     self.assertContains(response, "The Lexington")
 
   def test_meetups_pizza_places_are_displayed_on_landing_page(self):
-    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.pizza_places.create(name='Pizza!?')
-    response = self.client.get('/')
-    self.assertContains(response, 'Pizza!?')
+    response = index(self.request)
+    self.assertContains(response, 'Prince')
 
   def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self):
-    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    meetup.pizza_places.create(name='Pizza!?')
-    meetup.pizza_places.create(name='PizzOOO')
-    response = self.client.get('/')
-    self.assertContains(response, 'Pizza!?')
+    self.meetup.pizza_places.create(name='PizzOOO', yelp_link='https://www.yelp.com/biz/lombardis-pizza-new-york')
+    response = index(self.request)
+    self.assertContains(response, 'Prince')
     self.assertContains(response, 'PizzOOO')
 
+  def test_meetups_pizza_places_ratings_are_displayed_on_landing_page(self):
+    response = index(self.request)
+    self.assertContains(response, '🍕🍕🍕🍕')
+
   def test_next_meetup_location_displayed(self):
-    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    response = self.client.get('/')
+    response = index(self.request)
     self.assertContains(response, "The Lexington")
 
   def test_next_meetup_time_displayed(self):
-    meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
-    response = self.client.get('/')
+    response = index(self.request)
     self.assertContains(response, "Mon May  4 08:00:00")
 
   def test_next_meetup_title_displayed(self):
-    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    response = self.client.get('/')
+    response = index(self.request)
     self.assertContains(response, "Code &amp; Coffee")
 
   def test_landing_page_contains_map_link(self):
-    meetup = Meetup.objects.create(name="SCNY", meetup_link='http://www.meetup.com/Software-Craftsmanship-New-York/')
-    response = self.client.get('/')
+    response = index(self.request)
+    self.assertContains(response, "https://www.yelp.com/biz/prince-st-pizza-new-york")
+
+  def test_landing_page_contains_yelp_link(self):
+    response = index(self.request)
     self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
+
+  def tearDown(self):
+    self.addCleanup(self.patcher.stop)
 
 
 class TestUserAuthentication(TestCase):

@@ -5,28 +5,9 @@
 
 <div class="welcome-header">
 
-  {% if user.is_authenticated %}
-
-    <div>
-      <h1>WELCOME, {{request.user.email}} !</h1>
-      <a href="/sign_out">Sign Out</a>
-    </div>
-
-  {% else %}
-
     <div>
       <h1>welcome to meetup.pizza</h1>
     </div>
-
-    <div class="signup-link">
-        <a href="/sign_up">Signup</a>
-    </div>
-
-    <div class="signin-link">
-        <a href="/sign_in">Sign In</a>
-    </div>
-
-  {% endif %}
 
 </div>
 
@@ -36,21 +17,22 @@
 
     <div class="meetup">
 
-      <h3 class='meetup-name'><a href="{{ meetup.meetup_link }}">{{ meetup.name }}</a></h3>
+      <h3 class='meetup-name'><a href="{{ meetup.get_meetup_link }}">{{ meetup.get_meetup_name }}</a></h3>
 
-      {% if meetup.next_event_topic %}
+      {% if meetup.get_meetup_next_event_topic %}
         <div class='meetup-description'>
           <strong class='subheader'>Next Event:</strong>
-          <p>{{ meetup.next_event_topic }} - {{ meetup.datetime}} at
-          <a href="{{ meetup.map_link }}">{{ meetup.venue }}</a></p>
+          <p>{{ meetup.get_meetup_next_event_topic }} - {{ meetup.get_meetup_datetime}} at
+          <a href="{{ meetup.get_meetup_map_link }}">{{ meetup.get_meetup_venue }}</a></p>
         </div>
       {% endif %}
 
       <div class='meetup-pizza-places'>
         <strong class='subheader'>Pizzas:</strong>
-        {% for place in meetup.pizza_places %}
+        {% for pizza_place in meetup.get_meetup_pizza_places %}
         <li class='meetup-pizza-list'>
-          {{ place }}
+          <a href="{{ pizza_place.get_yelp_link }}">{{ pizza_place.get_pizza_place_name }}</a>
+          {{ pizza_place.get_pizza_place_rating }}
         </li>
         {% endfor %}
       </div>
