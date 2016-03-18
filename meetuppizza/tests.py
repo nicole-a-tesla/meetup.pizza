@@ -103,13 +103,13 @@ class TestLandingPage(TestCase):
     response = index(self.request)
     self.assertContains(response, "Code &amp; Coffee")
 
-  def test_landing_page_contains_map_link(self):
+  def test_landing_page_contains_yelp_link(self):
     response = index(self.request)
     self.assertContains(response, "https://www.yelp.com/biz/prince-st-pizza-new-york")
 
-  def test_landing_page_contains_yelp_link(self):
+  def test_landing_page_contains_map_link(self):
     response = index(self.request)
-    self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
+    self.assertContains(response, "https://www.google.com/maps?q=40.75501251220703,-73.97337341308594")
 
   def tearDown(self):
     self.addCleanup(self.patcher.stop)
