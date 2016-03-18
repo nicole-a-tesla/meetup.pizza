@@ -1,44 +1,50 @@
 {% load staticfiles %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" >
-
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
 <div class="welcome-header">
-
-    <div>
-      <h1>welcome to meetup.pizza</h1>
-    </div>
-
+  <div>
+    <h1>welcome to meetup.pizza</h1>
+    <p>A place to rate pizzas from your favorite meetups!</p>
+  </div>
 </div>
 
-<div id='meetup-list'>
+<div class='container'>
 
-  {% for meetup in meetups %}
+  <div id='meetup-list'>
 
-    <div class="meetup">
+    {% for meetup in meetups %}
 
-      <h3 class='meetup-name'><a href="{{ meetup.get_meetup_link }}">{{ meetup.get_meetup_name }}</a></h3>
+      <div class="meetup">
 
-      {% if meetup.get_meetup_next_event_topic %}
-        <div class='meetup-description'>
-          <strong class='subheader'>Next Event:</strong>
-          <p>{{ meetup.get_meetup_next_event_topic }} - {{ meetup.get_meetup_datetime}} at
-          <a href="{{ meetup.get_meetup_map_link }}">{{ meetup.get_meetup_venue }}</a></p>
+        <h3 class='meetup-name'><a href="{{ meetup.get_meetup_link }}">{{ meetup.get_meetup_name }}</a></h3>
+
+        {% if meetup.get_meetup_next_event_topic %}
+          <div class='meetup-description'>
+            <strong class='subheader'>Next Event:</strong>
+            <p class='meetup-description-text'>{{ meetup.get_meetup_next_event_topic }} - {{ meetup.get_meetup_datetime}} at
+            <a href="{{ meetup.get_meetup_map_link }}">{{ meetup.get_meetup_venue }}</a></p>
+          </div>
+        {% endif %}
+
+        <div class='meetup-pizza-places'>
+          <strong class='subheader'>Pizzas:</strong>
+          {% for pizza_place in meetup.get_meetup_pizza_places %}
+          <ul>
+            <li class='meetup-pizza-list'>
+              <a href="{{ pizza_place.get_yelp_link }}">{{ pizza_place.get_pizza_place_name }}</a>
+              {{ pizza_place.get_pizza_place_rating }}
+            </li>
+          </ul>
+          {% endfor %}
         </div>
-      {% endif %}
 
-      <div class='meetup-pizza-places'>
-        <strong class='subheader'>Pizzas:</strong>
-        {% for pizza_place in meetup.get_meetup_pizza_places %}
-        <li class='meetup-pizza-list'>
-          <a href="{{ pizza_place.get_yelp_link }}">{{ pizza_place.get_pizza_place_name }}</a>
-          {{ pizza_place.get_pizza_place_rating }}
-        </li>
-        {% endfor %}
       </div>
 
-    </div>
+    {% endfor %}
 
-  {% endfor %}
+  </div>
 
 </div>
