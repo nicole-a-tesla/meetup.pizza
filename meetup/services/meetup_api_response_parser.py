@@ -27,4 +27,3 @@ def parse(api_response):
       parsed_response['lon'] = '-74.0476567'
 
   return parsed_response
-

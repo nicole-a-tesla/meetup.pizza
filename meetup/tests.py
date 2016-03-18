@@ -222,4 +222,3 @@ class TestMeetupApiResponseParser(TestCase):
   def test_parsed_response_contains_lat_and_long(self):
     self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lat'), 40.75501251220703)
     self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lon'), -73.97337341308594)
-
