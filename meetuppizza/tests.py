@@ -65,6 +65,7 @@ class TestLandingPage(TestCase):
     self.mock_agent = self.patcher.start()
     self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
     self.meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
+    self.meetup.pizza_places.create(name='Prince', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
     self.request = RequestFactory().get("/")
 
 
@@ -77,19 +78,16 @@ class TestLandingPage(TestCase):
     self.assertContains(response, "The Lexington")
 
   def test_meetups_pizza_places_are_displayed_on_landing_page(self):
-    self.meetup.pizza_places.create(name='Pizza!?', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
     response = index(self.request)
-    self.assertContains(response, 'Pizza!?')
+    self.assertContains(response, 'Prince')
 
   def test_multiple_meetup_pizza_places_are_displayed_on_landing_page(self):
-    self.meetup.pizza_places.create(name='Pizza!?', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
     self.meetup.pizza_places.create(name='PizzOOO', yelp_link='https://www.yelp.com/biz/lombardis-pizza-new-york')
     response = index(self.request)
-    self.assertContains(response, 'Pizza!?')
+    self.assertContains(response, 'Prince')
     self.assertContains(response, 'PizzOOO')
 
   def test_meetups_pizza_places_ratings_are_displayed_on_landing_page(self):
-    self.meetup.pizza_places.create(name='Prince', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
     response = index(self.request)
     self.assertContains(response, '🍕🍕🍕🍕')
 
@@ -106,6 +104,10 @@ class TestLandingPage(TestCase):
     self.assertContains(response, "Code &amp; Coffee")
 
   def test_landing_page_contains_map_link(self):
+    response = index(self.request)
+    self.assertContains(response, "https://www.yelp.com/biz/prince-st-pizza-new-york")
+
+  def test_landing_page_contains_yelp_link(self):
     response = index(self.request)
     self.assertContains(response, "https://www.google.com/maps?q=40.7599983215332,-73.98999786376953")
 

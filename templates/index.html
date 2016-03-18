@@ -5,28 +5,9 @@
 
 <div class="welcome-header">
 
-  {% if user.is_authenticated %}
-
-    <div>
-      <h1>WELCOME, {{request.user.email}} !</h1>
-      <a href="/sign_out">Sign Out</a>
-    </div>
-
-  {% else %}
-
     <div>
       <h1>welcome to meetup.pizza</h1>
     </div>
-
-    <div class="signup-link">
-        <a href="/sign_up">Signup</a>
-    </div>
-
-    <div class="signin-link">
-        <a href="/sign_in">Sign In</a>
-    </div>
-
-  {% endif %}
 
 </div>
 
@@ -50,7 +31,8 @@
         <strong class='subheader'>Pizzas:</strong>
         {% for pizza_place in meetup.get_meetup_pizza_places %}
         <li class='meetup-pizza-list'>
-          {{ pizza_place.get_pizza_place_name }} {{ pizza_place.get_pizza_place_rating }}
+          <a href="{{ pizza_place.get_yelp_link }}">{{ pizza_place.get_pizza_place_name }}</a>
+          {{ pizza_place.get_pizza_place_rating }}
         </li>
         {% endfor %}
       </div>
