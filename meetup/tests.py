@@ -195,7 +195,8 @@ class TestMeetupPresenter(TestCase):
 
   def test_meetup_presenter_returns_meetup_map_link(self):
     presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals("https://www.google.com/maps?q=40.7599983215332,-73.98999786376953", presenter.get_meetup_map_link())
+    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", presenter.get_meetup_map_link())
+
 
   def test_meetup_presenter_returns_pizza_place_presenters(self):
     self.meetup.save()
@@ -219,5 +220,5 @@ class TestMeetupApiResponseParser(TestCase):
     self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('datetime'), 1458730800000)
 
   def test_parsed_response_contains_lat_and_long(self):
-    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lat'), 40.7599983215332)
-    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lon'), -73.98999786376953)
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lat'), 40.75501251220703)
+    self.assertEquals(meetup_api_response_parser.parse(self.mockResponse).get('lon'), -73.97337341308594)
