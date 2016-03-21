@@ -9,8 +9,8 @@ from pizzaplace.models import PizzaPlace
 
 def validate_urlname(link):
   validator = RegexValidator(
-    regex='meetup\.com\/\w+(-\w+)*\/$',
-    message="Url should be in form 'meetup.com/meetup-name/'",
+    regex='meetup.com/\w+[-\w+]*/$',
+    message="Url should be in form 'http://meetup.com/meetup-name'",
     code='invalid_url')
   return validator(link)
 

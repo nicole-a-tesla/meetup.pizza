@@ -8,7 +8,7 @@ from pizzaplace.services.yelp_api import YelpApi
 
 def validate_url(link):
   validator = RegexValidator(
-    regex='yelp\.com\/biz\/\w+(-\w+)*(\?(.)*)?',
+    regex='yelp.com/biz/\w+[-\w+]*(?:\?(?:.)*)?$',
     message="Url should be in form 'https://www.yelp.com/biz/some-pizza-place'",
     code='invalid_url')
   return validator(link)
