@@ -141,10 +141,10 @@ class TestYelpApi(TestCase):
 
   def test_validator_returns_true_for_valid_url(self):
     lookup_agent = YelpApi("https://www.yelp.com/biz/prince-st-pizza-new-york")
-    is_valid = lookup_agent.url_exists()
+    is_valid = lookup_agent.exists()
     self.assertTrue(is_valid)
 
   def test_validator_returns_false_for_invalid_url(self):
     lookup_agent = YelpApi("https://www.yelp.com/biz/this-is-not-a-meetup")
-    is_valid = lookup_agent.url_exists()
+    is_valid = lookup_agent.exists()
     self.assertFalse(is_valid)

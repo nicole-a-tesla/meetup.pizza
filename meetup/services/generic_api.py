@@ -14,7 +14,7 @@ class GenericApi():
   def build_api_url(self):
     pass
 
-  def url_exists(self):
+  def exists(self):
     return self.get_response().status_code == 200
 
   def get_unique_id(self):

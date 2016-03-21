@@ -14,7 +14,7 @@ def validate_url(link):
   return validator(link)
 
 def validate_yelp_business_exists(link):
-  if not YelpApi(link).url_exists():
+  if not YelpApi(link).exists():
     raise ValidationError("Yelp Business not found on Yelp.com")
 
 class PizzaPlace(TimeStampedModel):

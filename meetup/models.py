@@ -15,7 +15,7 @@ def validate_urlname(link):
   return validator(link)
 
 def validate_meetup_exists(link):
-  if not MeetupApi(link).url_exists():
+  if not MeetupApi(link).exists():
     raise ValidationError("Meetup not found on meetup.com")
 
 
