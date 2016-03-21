@@ -191,7 +191,7 @@ class TestMeetupPresenter(TestCase):
 
   def test_meetup_presenter_returns_meetup_datetime(self):
     presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals("Mon May  4 08:00:00", presenter.get_meetup_datetime())
+    self.assertEquals("03/23/2016, 07:00:00 AM EDT", presenter.get_meetup_datetime())
 
   def test_meetup_presenter_returns_meetup_map_link(self):
     presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)

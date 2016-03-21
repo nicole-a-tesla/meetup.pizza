@@ -1,6 +1,9 @@
 import time
+import datetime
+from pytz import timezone
 from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi
+from django.utils.timezone import make_aware
 
 class MeetupPresenter():
   def __init__(self, meetup, meetup_api, api_response_parser):
@@ -21,7 +24,9 @@ class MeetupPresenter():
 
   def get_meetup_datetime(self):
     time_string = self.parsed_api_response.get('datetime')
-    return time.ctime(int(time_string))[:-6]
+    utc_time = datetime.datetime.fromtimestamp(int(time_string) / 1000)
+    eastern_time = make_aware(utc_time).strftime('%m/%d/%Y, %I:%M:%S %p %Z')
+    return eastern_time
 
   def get_meetup_map_link(self):
     lat = self.parsed_api_response.get('lat')

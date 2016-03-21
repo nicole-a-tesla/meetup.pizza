@@ -97,7 +97,7 @@ class TestLandingPage(TestCase):
 
   def test_next_meetup_time_displayed(self):
     response = index(self.request)
-    self.assertContains(response, "Mon May  4 08:00:00")
+    self.assertContains(response, "03/23/2016, 07:00:00 AM EDT")
 
   def test_next_meetup_title_displayed(self):
     response = index(self.request)
