@@ -1,8 +1,10 @@
-from django.db import models
-from model_utils.models import TimeStampedModel
-from django.core.validators import RegexValidator
-from pizzaplace.services.yelp_api import YelpApi
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db import models
+
+from model_utils.models import TimeStampedModel
+
+from pizzaplace.services.yelp_api import YelpApi
 
 def validate_url(link):
   validator = RegexValidator(

@@ -1,11 +1,13 @@
-from django.test import TestCase
-from pizzaplace.models import PizzaPlace
-from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter 
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db import DataError
-from django.core.exceptions import ValidationError
+from django.test import TestCase
+
 from unittest import mock
 from unittest.mock import patch
+
+from pizzaplace.models import PizzaPlace
+from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi
 
 class TestPizzaPlace(TestCase):
@@ -59,10 +61,10 @@ class TestPizzaPlaceModelValidations(TestCase):
   def test_error_raised_if_not_a_yelp_link(self):
     pizza_place = PizzaPlace(name="Name", yelp_link="http://notyelpatall.com/biz/prince-st-pizza-new-york")
     self.assertRaises(ValidationError, pizza_place.full_clean)
-  
+
   def test_error_raised_if_no_bizname_in_pizza_place_url(self):
     pizza_place = PizzaPlace(name="Oh Pizza!", yelp_link='https://www.yelp.com/biz/')
-    self.assertRaises(ValidationError, pizza_place.full_clean)  
+    self.assertRaises(ValidationError, pizza_place.full_clean)
 
   def test_error_raised_if_no_biz_key_in_pizza_place_url(self):
     pizza_place = PizzaPlace(name="Oh Pizza!", yelp_link='https://www.yelp.com/prince-st-pizza-new-york')
@@ -72,7 +74,7 @@ class TestPizzaPlaceModelValidations(TestCase):
     pizza_place = PizzaPlace(name="Oh Pizza!", yelp_link='https://www.yelp.com/biz/lombardis-pizza-new-york?osq=lombardis-pizza-new-york')
     errors_raised_by_pizza_place = pizza_place.full_clean()
     self.assertIsNone(errors_raised_by_pizza_place)
-    
+
   def test_error_raised_if_link_doesnt_contain_valid_business_name(self):
     pizza_place = PizzaPlace(name="Oh Pizza!", yelp_link='https://www.yelp.com/biz/imaginary-pizza/')
     self.assertRaises(ValidationError, pizza_place.full_clean)
@@ -110,7 +112,7 @@ class TestPizzaPlacePresenter(TestCase):
     self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {'rating' : 4.5}
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
     self.assertEquals(presenter.get_pizza_place_rating(), "🍕🍕🍕🍕")
-  
+
   def test_yelp_presenter_rounds_yelp_review_down(self):
     self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {}
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)

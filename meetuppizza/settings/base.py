@@ -33,11 +33,11 @@ DEBUG = False
 
 MEETUP_KEY = os.getenv("MEETUP_KEY")
 YELP_OAUTH_OBJECT = OAuth1(
-          os.getenv('YELP_CONSUMER_KEY'),
-          os.getenv('YELP_CONSUMER_SECRET'),
-          os.getenv('YELP_TOKEN'),
-          os.getenv('YELP_TOKEN_SECRET')
-      )
+		os.getenv('YELP_CONSUMER_KEY'),
+		os.getenv('YELP_CONSUMER_SECRET'),
+		os.getenv('YELP_TOKEN'),
+		os.getenv('YELP_TOKEN_SECRET')
+		)
 
 
 # Application definition

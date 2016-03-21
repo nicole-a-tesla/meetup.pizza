@@ -1,9 +1,11 @@
-from django.db import models
-from pizzaplace.models import PizzaPlace
-from django.core.validators import RegexValidator
-from meetup.services.meetup_api import MeetupApi
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db import models
+
 from model_utils.models import TimeStampedModel
+
+from meetup.services.meetup_api import MeetupApi
+from pizzaplace.models import PizzaPlace
 
 def validate_urlname(link):
   validator = RegexValidator(
