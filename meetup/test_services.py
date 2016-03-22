@@ -5,6 +5,7 @@ from meetuppizza.settings import base
 from meetup.services.meetup_client import MeetupClient
 from meetup.services.meetup_service import MeetupService
 from meetup.services.meetup_presenter import MeetupPresenter
+from meetup.services.meetup_url_builder import MeetupUrlBuilder
 from meetup.models import Meetup
 
 
@@ -17,16 +18,6 @@ class TestMeetupService(TestCase):
     self.assertIsInstance(client_info, MeetupPresenter)
 
 class TestMeetupClient(TestCase):
-  def test_build_api_components(self):
-    api_url_components = MeetupClient(valid_meetup_url).build_api_components()
-    self.assertEquals('https://api.meetup.com/papers-we-love/events', api_url_components['url'])
-
-  @patch('meetup.services.meetup_client.base')
-  def test_builds_params_hash(self, mock_settings):
-    mock_settings.MEETUP_KEY = "FAKE KEY"
-    api_url_components = MeetupClient(valid_meetup_url).build_api_components()
-    expected_params = {'key': "FAKE KEY"}
-    self.assertEquals(expected_params, api_url_components['params'])
 
   @patch('meetup.services.meetup_client.meetup_api_response_parser')
   def test_client_parsed_response_includes_venue(self, mock_response):
@@ -53,3 +44,16 @@ class TestHttpClient(TestCase):
              'params': key}
     response = HttpClient.get_response(args)
     self.assertEquals(404, response.status_code)
+
+class TestUrlBuilder(TestCase):
+  def test_build_api_components(self):
+    api_url_components = MeetupUrlBuilder(valid_meetup_url).build_api_components()
+    self.assertEquals('https://api.meetup.com/papers-we-love/events', api_url_components['url'])
+
+  @patch('meetup.services.meetup_url_builder.base')
+  def test_builds_params_hash(self, mock_settings):
+    mock_settings.MEETUP_KEY = "FAKE KEY"
+    api_url_components = MeetupUrlBuilder(valid_meetup_url).build_api_components()
+    expected_params = {'key': "FAKE KEY"}
+    self.assertEquals(expected_params, api_url_components['params'])
+
