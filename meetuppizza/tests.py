@@ -10,6 +10,7 @@ from unittest.mock import patch
 from meetup.models import Meetup
 from meetup.services.meetup_api import MeetupApi
 from meetup.services import meetup_api_response_parser
+from meetup.services.meetup_presenter import MeetupPresenter
 from meetuppizza.forms import RegistrationForm
 from meetuppizza.views import index
 from pizzaplace.models import PizzaPlace
@@ -24,49 +25,13 @@ params = {
 
 class TestLandingPage(TestCase):
   def setUp(self):
-    self.meetup_info = [
-        {
-          "created": 1426723243000,
-          "duration": 5400000,
-          "group": {
-            "created": 1391476627000,
-            "name": "Software Craftsmanship New York",
-            "id": 12705402,
-            "join_mode": "approval",
-            "lat": 40.7599983215332,
-            "lon": -73.98999786376953,
-            "urlname": "Software-Craftsmanship-New-York",
-            "who": "craftsmen"
-          },
-          "id": "ldxfglyvfbfc",
-          "link": "http://www.meetup.com/Software-Craftsmanship-New-York/events/229387692/",
-          "name": "Code & Coffee",
-          "status": "upcoming",
-          "time": 1458730800000,
-          "updated": 1453163859000,
-          "utc_offset": -14400000,
-          "yes_rsvp_count": 1,
-          "waitlist_count": 0,
-          "description": "<p>Do you like getting up early and starting the day with inspiring conversations or even better",
-            "venue": {
-              "id": 23708903,
-              "name": "The Lexington",
-              "lat": 40.75501251220703,
-              "lon": -73.97337341308594,
-              "address_1": "511 Lexington Ave",
-              "city": "New York",
-              "country": "us",
-              "localized_country_name": "USA",
-              "zip": "",
-              "state": "NY"
-            },
-          }
-        ]
-    self.patcher = patch('meetuppizza.views.MeetupApi')
-    self.mock_agent = self.patcher.start()
-    self.mock_agent.return_value.get_response.return_value.json.return_value = self.meetup_info
+    parsed_response = {'venue': 'The Lexington', 'next_event_topic': 'Code Coffee', 'datetime': 1458730800000, 'lat': '40.75501251220703', 'lon':  '-73.97337341308594'}
     self.meetup = Meetup.objects.create(name='new meetup', meetup_link='http://www.meetup.com/papers-we-love/')
     self.meetup.pizza_places.create(name='Prince', yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
+    self.patcher = patch('meetuppizza.views.MeetupService')
+    self.mock_service = self.patcher.start()
+    self.mock_service.return_value.get_decorated_meetup.return_value = MeetupPresenter(self.meetup, parsed_response)
+
     self.request = RequestFactory().get("/")
 
 
@@ -102,7 +67,7 @@ class TestLandingPage(TestCase):
 
   def test_next_meetup_title_displayed(self):
     response = index(self.request)
-    self.assertContains(response, "Code &amp; Coffee")
+    self.assertContains(response, "Code Coffee")
 
   def test_landing_page_contains_yelp_link(self):
     response = index(self.request)

@@ -9,9 +9,9 @@ from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi
 
 class MeetupPresenter():
-  def __init__(self, meetup, meetup_api, api_response_parser):
+  def __init__(self, meetup, parsed_response):
     self.meetup = meetup
-    self.parsed_api_response = self.get_api_response(meetup_api, api_response_parser)
+    self.parsed_api_response = parsed_response
 
   def get_meetup_link(self):
     return self.meetup.meetup_link
@@ -41,10 +41,6 @@ class MeetupPresenter():
     for pizza_place in self.meetup.pizza_places.all():
       pizza_place_presenters.append(PizzaPlacePresenter(pizza_place, YelpApi))
     return pizza_place_presenters
-
-  def get_api_response(self, meetup_api, api_response_parser):
-    response = meetup_api(self.meetup.meetup_link).get_response()
-    return api_response_parser.parse(response)
 
 
 

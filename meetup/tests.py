@@ -172,40 +172,32 @@ class TestMeetupApi(TestCase):
 class TestMeetupPresenter(TestCase):
 
   def setUp(self):
-    self.mock_meetup_api = MagicMock(spec=MeetupApi)
-    self.mock_meetup_api.return_value.get_response.return_value.json.return_value = meetup_api_response
     self.meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+    parsed_response = {'venue': 'The Lexington', 'next_event_topic': 'Code & Coffee', 'datetime': 1458730800000, 'lat': 40.75501251220703, 'lon':  -73.97337341308594}
+    self.presenter = MeetupPresenter(self.meetup, parsed_response)
 
   def test_meetup_presenter_returns_meetup_link(self):
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals(presenter.get_meetup_link(), 'http://www.meetup.com/papers-we-love/')
+    self.assertEquals(self.presenter.get_meetup_link(), 'http://www.meetup.com/papers-we-love/')
 
   def test_meetup_presenter_returns_meetup_name(self):
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals(presenter.get_meetup_name(), 'Meetup1')
+    self.assertEquals(self.presenter.get_meetup_name(), 'Meetup1')
 
   def test_meetup_presenter_returns_meetup_venue(self):
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals('The Lexington', presenter.get_meetup_venue())
+    self.assertEquals('The Lexington', self.presenter.get_meetup_venue())
 
   def test_meetup_presenter_returns_meetup_next_topic(self):
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals('Code & Coffee', presenter.get_meetup_next_event_topic())
+    self.assertEquals('Code & Coffee', self.presenter.get_meetup_next_event_topic())
 
   def test_meetup_presenter_returns_meetup_datetime(self):
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals("03/23/2016, 07:00:00 AM EDT", presenter.get_meetup_datetime())
+    self.assertEquals("03/23/2016, 07:00:00 AM EDT", self.presenter.get_meetup_datetime())
 
   def test_meetup_presenter_returns_meetup_map_link(self):
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", presenter.get_meetup_map_link())
-
+    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", self.presenter.get_meetup_map_link())
 
   def test_meetup_presenter_returns_pizza_place_presenters(self):
     self.meetup.save()
     pizza_place = self.meetup.pizza_places.create(name="Pizza place", yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
-    presenter = MeetupPresenter(self.meetup, self.mock_meetup_api, meetup_api_response_parser)
-    self.assertIsInstance(presenter.get_meetup_pizza_places()[0], PizzaPlacePresenter)
+    self.assertIsInstance(self.presenter.get_meetup_pizza_places()[0], PizzaPlacePresenter)
 
 
 class TestMeetupApiResponseParser(TestCase):

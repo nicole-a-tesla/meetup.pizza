@@ -8,12 +8,14 @@ from meetup.models import Meetup
 from meetup.services.meetup_api import MeetupApi
 from meetup.services.meetup_presenter import MeetupPresenter
 from meetup.services import meetup_api_response_parser
+from meetup.services.meetup_service import MeetupService
 
 def index(request):
   meetups = Meetup.objects.all()
   meetup_presenters = []
   for meetup in meetups:
-    meetup_presenters.append(MeetupPresenter(meetup, MeetupApi, meetup_api_response_parser))
+    service = MeetupService(meetup)
+    meetup_presenters.append(service.get_decorated_meetup())
   return render(request, 'index.html', {"meetups": meetup_presenters})
 
 def sign_up(request):
