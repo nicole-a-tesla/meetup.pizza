@@ -9,7 +9,7 @@ from unittest.mock import patch
 from meetup.models import Meetup
 from meetup.services.meetup_api import MeetupApi
 from meetup.services.meetup_presenter import MeetupPresenter
-from meetup.services import meetup_api_response_parser
+from meetup.services.meetup_api_response_parser import MeetupApiResponseParser
 from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
 
 
@@ -202,19 +202,20 @@ class TestMeetupApiResponseParser(TestCase):
   def setUp(self):
     self.mock_response = HttpResponse()
     self.mock_response.json = MagicMock(return_value=meetup_api_response)
+    self.meetup_api_response_parser = MeetupApiResponseParser(self.mock_response)
 
   def test_parsed_response_contains_venue(self):
-    self.assertEquals(meetup_api_response_parser.parse(self.mock_response).get('venue'), 'The Lexington')
+    self.assertEquals(self.meetup_api_response_parser.parse().get('venue'), 'The Lexington')
 
   def test_parsed_response_contains_event_topic(self):
-    self.assertEquals(meetup_api_response_parser.parse(self.mock_response).get('next_event_topic'), 'Code & Coffee')
+    self.assertEquals(self.meetup_api_response_parser.parse().get('next_event_topic'), 'Code & Coffee')
 
   def test_parsed_response_contains_event_datetime(self):
-    self.assertEquals(meetup_api_response_parser.parse(self.mock_response).get('datetime'), 1458730800000)
+    self.assertEquals(self.meetup_api_response_parser.parse().get('datetime'), 1458730800000)
 
   def test_parsed_response_contains_lat_and_long(self):
-    self.assertEquals(meetup_api_response_parser.parse(self.mock_response).get('lat'), 40.75501251220703)
-    self.assertEquals(meetup_api_response_parser.parse(self.mock_response).get('lon'), -73.97337341308594)
+    self.assertEquals(self.meetup_api_response_parser.parse().get('lat'), 40.75501251220703)
+    self.assertEquals(self.meetup_api_response_parser.parse().get('lon'), -73.97337341308594)
 
   def test_handles_response_with_no_venue(self):
     venueless_response = [{
@@ -243,4 +244,5 @@ class TestMeetupApiResponseParser(TestCase):
           }
         ]
     self.mock_response.json = MagicMock(return_value=venueless_response)
-    self.assertEquals(meetup_api_response_parser.parse(self.mock_response).get('venue'), 'No name listed')
+    # meetup_api_response_parser = MeetupApiResponseParser(venueless_response)
+    self.assertEquals(self.meetup_api_response_parser.parse().get('venue'), 'No venue listed')

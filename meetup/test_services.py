@@ -21,10 +21,10 @@ class TestMeetupService(TestCase):
 
 class TestMeetupClient(TestCase):
 
-  @patch('meetup.services.meetup_client.meetup_api_response_parser')
+  @patch('meetup.services.meetup_client.MeetupApiResponseParser')
   def test_client_parsed_response_includes_venue(self, mock_response):
     parsed_response = {'venue': 'Someplace', 'next_event_topic': 'some topic', 'datetime': 1458730800000, 'lat': '40.689745', 'lon':  '-74.0476567'}
-    mock_response.parse.return_value = parsed_response
+    mock_response.return_value.parse.return_value = parsed_response
     parsed_meetup_client_response = MeetupClient(valid_meetup_url).get_meetup_info()
     self.assertTrue('venue' in parsed_meetup_client_response)
     self.assertTrue('next_event_topic' in parsed_meetup_client_response)
