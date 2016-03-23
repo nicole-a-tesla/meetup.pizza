@@ -15,7 +15,7 @@ valid_meetup_url = 'https://www.meetup.com/papers-we-love/'
 
 class TestMeetupService(TestCase):
   def test_service_gets_info_from_meetup_client(self):
-    meetup = Meetup(name="Ms. Meetup", meetup_link=valid_meetup_url)
+    meetup = Meetup(name="Ms. Meetup", meetup_url=valid_meetup_url)
     client_info = MeetupService(meetup).get_decorated_meetup()
     self.assertIsInstance(client_info, MeetupPresenter)
 

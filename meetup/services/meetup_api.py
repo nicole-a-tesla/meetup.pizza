@@ -20,4 +20,4 @@ class MeetupApi(GenericApi):
     return self.BASE_URL + self.get_unique_id() + '/' + self.CATEGORY
 
   def get_unique_id(self):
-    return self.link.split('/')[-2]
+    return self.url.split('/')[-2]

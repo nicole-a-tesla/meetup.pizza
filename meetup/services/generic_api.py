@@ -7,8 +7,8 @@ from meetuppizza.settings import base
 class GenericApi():
   BASE_URL = ''
 
-  def __init__(self, link):
-    self.link = link
+  def __init__(self, url):
+    self.url = url
 
   def get_response(self):
     pass

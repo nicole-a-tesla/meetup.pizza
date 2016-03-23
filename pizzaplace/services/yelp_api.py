@@ -16,5 +16,5 @@ class YelpApi(GenericApi):
     return self.BASE_URL + self.get_unique_id()
 
   def get_unique_id(self):
-    link_minus_queries = self.link.split('?')[0]
-    return link_minus_queries.split('/')[-1]
+    url_minus_queries = self.url.split('?')[0]
+    return url_minus_queries.split('/')[-1]

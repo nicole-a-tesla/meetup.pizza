@@ -13,8 +13,8 @@ class MeetupPresenter():
     self.meetup = meetup
     self.parsed_api_response = parsed_response
 
-  def get_meetup_link(self):
-    return self.meetup.meetup_link
+  def get_meetup_url(self):
+    return self.meetup.meetup_url
 
   def get_meetup_name(self):
     return self.meetup.name
@@ -31,7 +31,7 @@ class MeetupPresenter():
     eastern_time = make_aware(utc_time).strftime('%m/%d/%Y, %I:%M:%S %p %Z')
     return eastern_time
 
-  def get_meetup_map_link(self):
+  def get_meetup_map_url(self):
     lat = self.parsed_api_response.get('lat')
     lon = self.parsed_api_response.get('lon')
     return "https://www.google.com/maps?q=%s,%s" % (lat, lon)

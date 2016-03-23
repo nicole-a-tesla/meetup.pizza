@@ -61,13 +61,13 @@ class TestMeetup(TestCase):
     meetup = Meetup()
     self.assertIsInstance(meetup, Meetup)
 
-  def test_valid_meetup_has_name_and_link(self):
-    meetup = Meetup(name='papers we love', meetup_link='http://meetup.com/some-meetup')
+  def test_valid_meetup_has_name_and_url(self):
+    meetup = Meetup(name='papers we love', meetup_url='http://meetup.com/some-meetup')
     self.assertEquals(meetup.name, 'papers we love')
-    self.assertEquals(meetup.meetup_link, 'http://meetup.com/some-meetup')
+    self.assertEquals(meetup.meetup_url, 'http://meetup.com/some-meetup')
 
-  def test_blank_meetup_link_raises_integrity_error(self):
-    meetup = Meetup(meetup_link='http://meetup.com/some-meetup')
+  def test_blank_meetup_url_raises_integrity_error(self):
+    meetup = Meetup(meetup_url='http://meetup.com/some-meetup')
     self.assertRaises(IntegrityError, meetup.save)
 
   def test_blank_meetup_name_raises_integrity_error(self):
@@ -76,26 +76,26 @@ class TestMeetup(TestCase):
 
   def test_meetup_name_can_not_be_over_500_characters(self):
     name = 'x' *501
-    meetup = Meetup(name=name, meetup_link='http://meetup.com/some-meetup')
+    meetup = Meetup(name=name, meetup_url='http://meetup.com/some-meetup')
     self.assertRaises(DataError, meetup.save)
 
   def test_string_representation_of_meetup_is_its_name(self):
-    m = Meetup(name="Mr. Meetup", meetup_link='http://meetup.com/some-other-meetup')
+    m = Meetup(name="Mr. Meetup", meetup_url='http://meetup.com/some-other-meetup')
     self.assertEquals("Mr. Meetup", str(m))
 
   def test_meetup_name_is_unique(self):
-    m = Meetup.objects.create(name="Meetup", meetup_link='http://meetup.com/some-meetup')
-    n = Meetup(name="Meetup", meetup_link='http://meetup.com/some-other-meetup')
+    m = Meetup.objects.create(name="Meetup", meetup_url='http://meetup.com/some-meetup')
+    n = Meetup(name="Meetup", meetup_url='http://meetup.com/some-other-meetup')
     self.assertRaises(IntegrityError, n.save)
 
-  def test_meetup_link_is_unique(self):
-    m = Meetup.objects.create(name="Meetup", meetup_link='http://meetup.com/some-meetup')
-    n = Meetup(name="Meetup new", meetup_link='http://meetup.com/some-meetup')
+  def test_meetup_url_is_unique(self):
+    m = Meetup.objects.create(name="Meetup", meetup_url='http://meetup.com/some-meetup')
+    n = Meetup(name="Meetup new", meetup_url='http://meetup.com/some-meetup')
     self.assertRaises(IntegrityError, n.save)
 
   def test_getting_all_associated_pizzas(self):
-    meetup= Meetup.objects.create(name="Meetup1", meetup_link='http://meetup.com/some-meetup')
-    place = meetup.pizza_places.create(name="Pete Zazz", yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
+    meetup= Meetup.objects.create(name="Meetup1", meetup_url='http://meetup.com/some-meetup')
+    place = meetup.pizza_places.create(name="Pete Zazz", yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
     self.assertEquals(place, meetup.pizza_places.first())
 
 class TestMeetupModelValidations(TestCase):
@@ -105,38 +105,38 @@ class TestMeetupModelValidations(TestCase):
     self.mock_agent = self.patcher.start()
 
   def test_meetup_raises_error_on_invalid_url(self):
-    meetup= Meetup(name="Meetup1", meetup_link='hi/ok/what')
+    meetup= Meetup(name="Meetup1", meetup_url='hi/ok/what')
     self.assertRaises(ValidationError, meetup.full_clean)
 
-  def test_error_raised_if_link_does_not_point_to_meetupdotcom(self):
-    meetup= Meetup(name="Meetup1", meetup_link='http://www.example.com/')
+  def test_error_raised_if_url_does_not_point_to_meetupdotcom(self):
+    meetup= Meetup(name="Meetup1", meetup_url='http://www.example.com/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_no_urlname_in_meetup_url(self):
-    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/')
+    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_no_trailing_slash_in_meetup_url(self):
-    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/hackerhours')
+    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_multiple_urlnames(self):
-    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/hackerhours/events/')
+    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours/events/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_meetup_url_with_urlname_and_trailing_slash_passes(self):
-    meetup= Meetup(name="Meetup1", meetup_link='http://www.meetup.com/hackerhours/')
+    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertTrue(errors_raiesed_by_meetup == None)
 
   def test_url_with_dashes_in_urlname_passes(self):
-    meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/papers-we-love/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertIsNone(errors_raiesed_by_meetup)
 
   def test_non_real_meetup_raises_validation_error(self):
     self.mock_agent.return_value.exists.return_value = False
-    meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/la-la-la/')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/la-la-la/')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def tearDown(self):
@@ -165,19 +165,19 @@ class TestMeetupApi(TestCase):
     is_valid = lookup_agent.exists()
     self.assertFalse(is_valid)
 
-  def lookup_agent_builder(self, link):
-    return MeetupApi(link)
+  def lookup_agent_builder(self, url):
+    return MeetupApi(url)
 
 
 class TestMeetupPresenter(TestCase):
 
   def setUp(self):
-    self.meetup = Meetup(name="Meetup1", meetup_link='http://www.meetup.com/papers-we-love/')
+    self.meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/papers-we-love/')
     parsed_response = {'venue': 'The Lexington', 'next_event_topic': 'Code & Coffee', 'datetime': 1458730800000, 'lat': 40.75501251220703, 'lon':  -73.97337341308594}
     self.presenter = MeetupPresenter(self.meetup, parsed_response)
 
-  def test_meetup_presenter_returns_meetup_link(self):
-    self.assertEquals(self.presenter.get_meetup_link(), 'http://www.meetup.com/papers-we-love/')
+  def test_meetup_presenter_returns_meetup_url(self):
+    self.assertEquals(self.presenter.get_meetup_url(), 'http://www.meetup.com/papers-we-love/')
 
   def test_meetup_presenter_returns_meetup_name(self):
     self.assertEquals(self.presenter.get_meetup_name(), 'Meetup1')
@@ -191,12 +191,12 @@ class TestMeetupPresenter(TestCase):
   def test_meetup_presenter_returns_meetup_datetime(self):
     self.assertEquals("03/23/2016, 07:00:00 AM EDT", self.presenter.get_meetup_datetime())
 
-  def test_meetup_presenter_returns_meetup_map_link(self):
-    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", self.presenter.get_meetup_map_link())
+  def test_meetup_presenter_returns_meetup_map_url(self):
+    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", self.presenter.get_meetup_map_url())
 
   def test_meetup_presenter_returns_pizza_place_presenters(self):
     self.meetup.save()
-    pizza_place = self.meetup.pizza_places.create(name="Pizza place", yelp_link='https://www.yelp.com/biz/prince-st-pizza-new-york')
+    pizza_place = self.meetup.pizza_places.create(name="Pizza place", yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
     self.assertIsInstance(self.presenter.get_meetup_pizza_places()[0], PizzaPlacePresenter)
 
 
