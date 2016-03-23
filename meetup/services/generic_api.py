@@ -2,8 +2,6 @@ from django.http import HttpResponse
 
 import requests
 
-from meetuppizza.settings import base
-
 class GenericApi():
   BASE_URL = ''
 

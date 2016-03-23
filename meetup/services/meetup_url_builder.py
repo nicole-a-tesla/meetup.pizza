@@ -1,4 +1,4 @@
-from meetuppizza.settings import base
+from django.conf import settings
 
 class MeetupUrlBuilder():
   def __init__(self, meetup_url):
@@ -16,4 +16,4 @@ class MeetupUrlBuilder():
     return "https://api.meetup.com/" + self.get_unique_id() + '/events'
 
   def build_params(self):
-    return {"key": base.MEETUP_KEY }
+    return {"key": settings.MEETUP_KEY }

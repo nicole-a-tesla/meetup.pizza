@@ -1,9 +1,9 @@
 from django.test import TestCase
+from django.conf import settings
 
 from unittest.mock import patch
 
 from meetup.services.http_client import HttpClient
-from meetuppizza.settings import base
 from meetup.services.meetup_client import MeetupClient
 from meetup.services.meetup_service import MeetupService
 from meetup.services.meetup_presenter import MeetupPresenter
@@ -34,14 +34,14 @@ class TestMeetupClient(TestCase):
 
 class TestHttpClient(TestCase):
   def test_returns_200_ok_from_valid_url(self):
-    key = {"key": base.MEETUP_KEY }
+    key = {"key": settings.MEETUP_KEY }
     args = {'url': 'https://api.meetup.com/papers-we-love',
              'params': key}
     response = HttpClient.get_response(args)
     self.assertEquals(200, response.status_code)
 
   def test_returns_404_for_invalid_url(self):
-    key = {"key": base.MEETUP_KEY }
+    key = {"key": settings.MEETUP_KEY }
     args = {'url': 'https://api.meetup.com/papers-we-HATE',
              'params': key}
     response = HttpClient.get_response(args)
@@ -52,7 +52,7 @@ class TestUrlBuilder(TestCase):
     api_url_components = MeetupUrlBuilder(valid_meetup_url).build_api_components()
     self.assertEquals('https://api.meetup.com/papers-we-love/events', api_url_components['url'])
 
-  @patch('meetup.services.meetup_url_builder.base')
+  @patch('meetup.services.meetup_url_builder.settings')
   def test_builds_params_hash(self, mock_settings):
     mock_settings.MEETUP_KEY = "FAKE KEY"
     api_url_components = MeetupUrlBuilder(valid_meetup_url).build_api_components()
