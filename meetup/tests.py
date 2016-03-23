@@ -3,7 +3,6 @@ from django.db import IntegrityError, DataError
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 
-from unittest import mock
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
@@ -12,7 +11,6 @@ from meetup.services.meetup_api import MeetupApi
 from meetup.services.meetup_presenter import MeetupPresenter
 from meetup.services import meetup_api_response_parser
 from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
-from pizzaplace.models import PizzaPlace
 
 
 

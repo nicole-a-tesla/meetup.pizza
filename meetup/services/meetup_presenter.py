@@ -1,9 +1,7 @@
-import time
 import datetime
 
 from django.utils.timezone import make_aware
 
-from pytz import timezone
 
 from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi

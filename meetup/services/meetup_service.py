@@ -1,4 +1,3 @@
-from meetup.models import Meetup
 from meetup.services.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_client import MeetupClient
 

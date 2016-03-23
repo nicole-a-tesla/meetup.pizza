@@ -3,7 +3,6 @@ from django.db import IntegrityError
 from django.db import DataError
 from django.test import TestCase
 
-from unittest import mock
 from unittest.mock import patch
 
 from pizzaplace.models import PizzaPlace

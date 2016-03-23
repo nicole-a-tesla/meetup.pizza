@@ -1,19 +1,13 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.shortcuts import render, redirect
 from django.test import RequestFactory
 
-from unittest import mock
 from unittest.mock import patch
 
 from meetup.models import Meetup
-from meetup.services.meetup_api import MeetupApi
-from meetup.services import meetup_api_response_parser
 from meetup.services.meetup_presenter import MeetupPresenter
-from meetuppizza.forms import RegistrationForm
 from meetuppizza.views import index
-from pizzaplace.models import PizzaPlace
 
 
 params = {

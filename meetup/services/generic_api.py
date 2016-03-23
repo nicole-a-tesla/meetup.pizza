@@ -1,7 +1,3 @@
-from django.http import HttpResponse
-
-import requests
-
 class GenericApi():
   BASE_URL = ''
 

@@ -1,7 +1,6 @@
 from django.conf import settings
 
 import requests
-from requests_oauthlib import OAuth1
 
 from meetup.services.generic_api import GenericApi
 
