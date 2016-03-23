@@ -1,7 +1,9 @@
 from django.http import HttpResponse
+
 import requests
-from meetuppizza.settings import base
+
 from meetup.services.generic_api import GenericApi
+from meetuppizza.settings import base
 
 class MeetupApi(GenericApi):
   CATEGORY = 'events'

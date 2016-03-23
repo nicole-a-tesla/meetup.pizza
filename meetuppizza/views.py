@@ -1,8 +1,9 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+
 from meetuppizza.forms import RegistrationForm
 from meetup.models import Meetup
 from meetup.services.meetup_api import MeetupApi

@@ -1,5 +1,6 @@
 import requests
 from requests_oauthlib import OAuth1
+
 from meetup.services.generic_api import GenericApi
 from meetuppizza.settings import base
 

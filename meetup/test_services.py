@@ -1,5 +1,7 @@
 from django.test import TestCase
+
 from unittest.mock import patch
+
 from meetup.services.http_client import HttpClient
 from meetuppizza.settings import base
 from meetup.services.meetup_client import MeetupClient
