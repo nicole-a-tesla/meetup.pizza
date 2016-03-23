@@ -16,9 +16,9 @@ class MeetupApiResponseParser():
 
     return self.extract_attribute(value_at_current_key, args[1])
 
-  def exit_condition_is_true(self, dic, args):
+  def exit_condition_is_true(self, context, args):
     this_is_the_last_arg = len(args) == 1
-    no_matching_element_found = dic.get(args[0]) == None
+    no_matching_element_found = context.get(args[0]) == None
     return this_is_the_last_arg or no_matching_element_found
 
   def parse(self):
