@@ -6,7 +6,7 @@ from django.test import RequestFactory
 from unittest.mock import patch
 
 from meetup.models import Meetup
-from meetup.services.meetup_presenter import MeetupPresenter
+from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetuppizza.views import index
 
 

@@ -6,7 +6,7 @@ from unittest.mock import patch
 from meetup.services.http_client import HttpClient
 from meetup.services.meetup_client import MeetupClient
 from meetup.services.meetup_service import MeetupService
-from meetup.services.meetup_presenter import MeetupPresenter
+from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_url_builder import MeetupUrlBuilder
 from meetup.models import Meetup
 

@@ -8,9 +8,9 @@ from unittest.mock import patch
 
 from meetup.models import Meetup
 from meetup.services.meetup_api import MeetupApi
-from meetup.services.meetup_presenter import MeetupPresenter
+from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_api_response_parser import MeetupApiResponseParser
-from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
+from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 
 
 

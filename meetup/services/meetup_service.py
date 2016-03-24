@@ -1,4 +1,4 @@
-from meetup.services.meetup_presenter import MeetupPresenter
+from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_client import MeetupClient
 
 class MeetupService():

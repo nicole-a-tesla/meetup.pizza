@@ -6,7 +6,7 @@ from django.test import TestCase
 from unittest.mock import patch
 
 from pizzaplace.models import PizzaPlace
-from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
+from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi
 
 class TestPizzaPlace(TestCase):

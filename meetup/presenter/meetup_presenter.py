@@ -2,8 +2,7 @@ import datetime
 
 from django.utils.timezone import make_aware
 
-
-from pizzaplace.services.pizza_place_presenter import PizzaPlacePresenter
+from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi
 
 class MeetupPresenter():
