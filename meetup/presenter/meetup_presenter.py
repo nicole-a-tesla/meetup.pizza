@@ -35,10 +35,6 @@ class MeetupPresenter():
     return map_url_generator.generate_google_url(lat, lon)
 
   def meetup_pizza_places(self):
-    pizza_place_presenters = []
-    for pizza_place in self.meetup.pizza_places.all():
-      pizza_place_presenters.append(PizzaPlacePresenter(pizza_place, YelpApi))
+    pizza_places = self.meetup.pizza_places.all()
+    pizza_place_presenters = [PizzaPlacePresenter(place, YelpApi) for place in pizza_places]
     return pizza_place_presenters
-
-
-
