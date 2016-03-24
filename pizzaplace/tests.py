@@ -97,25 +97,25 @@ class TestPizzaPlacePresenter(TestCase):
 
   def test_yelp_presenter_returns_yelp_url(self):
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
-    self.assertEquals(presenter.get_yelp_url(), 'https://www.yelp.com/biz/lombardis-pizza-new-york')
+    self.assertEquals(presenter.yelp_url(), 'https://www.yelp.com/biz/lombardis-pizza-new-york')
 
   def test_yelp_presenter_returns_business_name(self):
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
-    self.assertEquals(presenter.get_pizza_place_name(), 'Oh Pizza!')
+    self.assertEquals(presenter.pizza_place_name(), 'Oh Pizza!')
 
   def test_yelp_presenter_returns_yelp_review(self):
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
-    self.assertEquals(presenter.get_pizza_place_rating(), "🍕🍕🍕🍕🍕")
+    self.assertEquals(presenter.pizza_place_rating(), "🍕🍕🍕🍕🍕")
 
   def test_yelp_presenter_rounds_yelp_review_down(self):
     self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {'rating' : 4.5}
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
-    self.assertEquals(presenter.get_pizza_place_rating(), "🍕🍕🍕🍕")
+    self.assertEquals(presenter.pizza_place_rating(), "🍕🍕🍕🍕")
 
   def test_yelp_presenter_rounds_yelp_review_down(self):
     self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {}
     presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
-    self.assertEquals(presenter.get_pizza_place_rating(), "No Rating")
+    self.assertEquals(presenter.pizza_place_rating(), "No Rating")
 
   def tearDown(self):
     self.addCleanup(self.patcher.stop)

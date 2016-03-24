@@ -10,30 +10,30 @@ class MeetupPresenter():
     self.meetup = meetup
     self.parsed_api_response = parsed_response
 
-  def get_meetup_url(self):
+  def meetup_url(self):
     return self.meetup.meetup_url
 
-  def get_meetup_name(self):
+  def meetup_name(self):
     return self.meetup.name
 
-  def get_meetup_venue(self):
+  def meetup_venue(self):
     return self.parsed_api_response.get('venue')
 
-  def get_meetup_next_event_topic(self):
+  def meetup_next_event_topic(self):
     return self.parsed_api_response.get('next_event_topic')
 
-  def get_meetup_datetime(self):
+  def meetup_datetime(self):
     time_string = self.parsed_api_response.get('datetime')
     utc_time = datetime.datetime.fromtimestamp(int(time_string) / 1000)
     eastern_time = make_aware(utc_time).strftime('%m/%d/%Y, %I:%M:%S %p %Z')
     return eastern_time
 
-  def get_meetup_map_url(self):
+  def meetup_map_url(self):
     lat = self.parsed_api_response.get('lat')
     lon = self.parsed_api_response.get('lon')
     return "https://www.google.com/maps?q=%s,%s" % (lat, lon)
 
-  def get_meetup_pizza_places(self):
+  def meetup_pizza_places(self):
     pizza_place_presenters = []
     for pizza_place in self.meetup.pizza_places.all():
       pizza_place_presenters.append(PizzaPlacePresenter(pizza_place, YelpApi))

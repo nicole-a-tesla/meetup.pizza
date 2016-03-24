@@ -175,27 +175,27 @@ class TestMeetupPresenter(TestCase):
     self.presenter = MeetupPresenter(self.meetup, parsed_response)
 
   def test_meetup_presenter_returns_meetup_url(self):
-    self.assertEquals(self.presenter.get_meetup_url(), 'http://www.meetup.com/papers-we-love/')
+    self.assertEquals(self.presenter.meetup_url(), 'http://www.meetup.com/papers-we-love/')
 
   def test_meetup_presenter_returns_meetup_name(self):
-    self.assertEquals(self.presenter.get_meetup_name(), 'Meetup1')
+    self.assertEquals(self.presenter.meetup_name(), 'Meetup1')
 
   def test_meetup_presenter_returns_meetup_venue(self):
-    self.assertEquals('The Lexington', self.presenter.get_meetup_venue())
+    self.assertEquals('The Lexington', self.presenter.meetup_venue())
 
   def test_meetup_presenter_returns_meetup_next_topic(self):
-    self.assertEquals('Code & Coffee', self.presenter.get_meetup_next_event_topic())
+    self.assertEquals('Code & Coffee', self.presenter.meetup_next_event_topic())
 
   def test_meetup_presenter_returns_meetup_datetime(self):
-    self.assertEquals("03/23/2016, 07:00:00 AM EDT", self.presenter.get_meetup_datetime())
+    self.assertEquals("03/23/2016, 07:00:00 AM EDT", self.presenter.meetup_datetime())
 
   def test_meetup_presenter_returns_meetup_map_url(self):
-    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", self.presenter.get_meetup_map_url())
+    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", self.presenter.meetup_map_url())
 
   def test_meetup_presenter_returns_pizza_place_presenters(self):
     self.meetup.save()
     pizza_place = self.meetup.pizza_places.create(name="Pizza place", yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
-    self.assertIsInstance(self.presenter.get_meetup_pizza_places()[0], PizzaPlacePresenter)
+    self.assertIsInstance(self.presenter.meetup_pizza_places()[0], PizzaPlacePresenter)
 
 
 class TestMeetupApiResponseParser(TestCase):

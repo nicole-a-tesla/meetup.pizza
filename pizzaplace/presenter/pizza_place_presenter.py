@@ -3,14 +3,14 @@ class PizzaPlacePresenter():
     self.pizza_place = pizza_place
     self.yelp_api = YelpApi
 
-  def get_yelp_url(self):
+  def yelp_url(self):
     return self.pizza_place.yelp_url
 
-  def get_pizza_place_name(self):
+  def pizza_place_name(self):
     return self.pizza_place.name
 
-  def get_pizza_place_rating(self):
-    response = self.yelp_api(self.get_yelp_url()).get_response()
+  def pizza_place_rating(self):
+    response = self.yelp_api(self.yelp_url()).get_response()
     json = response.json()
     if json:
       rating = json.get('rating')
