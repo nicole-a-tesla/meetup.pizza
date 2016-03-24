@@ -7,6 +7,7 @@ from meetup.services.http_client import HttpClient
 from meetup.services.meetup_client import MeetupClient
 from meetup.services.meetup_service import MeetupService
 from meetup.services.parsed_meetup_response import ParsedMeetupResponse
+from meetup.services import map_url_generator
 from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_url_builder import MeetupUrlBuilder
 from meetup.models import Meetup
@@ -83,3 +84,7 @@ class TestParsedMeetupResponse(TestCase):
 
   def test_parsed_meetup_response_has_lon(self):
     self.assertEquals(self.raw_parsed_response['lon'], self.parsed_meetup_response.lon)
+
+class TestMapUrlGenerator(TestCase):
+  def test_google_map_url_generator(self):
+    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", map_url_generator.generate_google_url(40.75501251220703, -73.97337341308594))

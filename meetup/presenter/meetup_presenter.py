@@ -2,6 +2,7 @@ import datetime
 
 from django.utils.timezone import make_aware
 
+from meetup.services import map_url_generator
 from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_api import YelpApi
 
@@ -31,7 +32,7 @@ class MeetupPresenter():
   def meetup_map_url(self):
     lat = self.parsed_api_response.lat
     lon = self.parsed_api_response.lon
-    return "https://www.google.com/maps?q=%s,%s" % (lat, lon)
+    return map_url_generator.generate_google_url(lat, lon)
 
   def meetup_pizza_places(self):
     pizza_place_presenters = []
