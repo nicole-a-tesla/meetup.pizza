@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test import RequestFactory
 
 from unittest.mock import patch
+from htmlvalidator.client import ValidatingClient
 
 from meetup.models import Meetup
 from meetup.presenter.meetup_presenter import MeetupPresenter
@@ -71,3 +72,12 @@ class TestLandingPage(TestCase):
 
   def tearDown(self):
     self.addCleanup(self.patcher.stop)
+
+class TestValidHTML(TestCase):
+  def setUp(self):
+    super(TestValidHTML, self).setUp()
+    self.client = ValidatingClient()
+
+  def test_landing_page_html(self):
+    response = self.client.get('/')
+    self.assertEquals(response.status_code, 200)

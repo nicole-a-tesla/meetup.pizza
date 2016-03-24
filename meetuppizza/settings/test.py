@@ -1,6 +1,8 @@
 from .base import *
 
 DEBUG = True
+HTMLVALIDATOR_ENABLED = True
+HTMLVALIDATOR_OUTPUT = 'stdout'
 
 DATABASES = {
     'default': {
