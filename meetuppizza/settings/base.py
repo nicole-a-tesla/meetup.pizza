@@ -8,13 +8,20 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
+from django.core.exceptions import ImproperlyConfigured
 import os
 import psycopg2
 import dj_database_url
 from unipath import Path
 import requests
 from requests_oauthlib import OAuth1
+
+def get_env_variable(var_name):
+    try:
+        return os.getenv(var_name)
+    except KeyError:
+        error_msg = "Set the {} envifonment variable".format(var_name)
+        raise ImproperlyConfigured(error_msg)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,12 +38,12 @@ SECRET_KEY = 'secret!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-MEETUP_KEY = os.getenv("MEETUP_KEY")
+MEETUP_KEY = get_env_variable("MEETUP_KEY")
 YELP_OAUTH_OBJECT = OAuth1(
-		os.getenv('YELP_CONSUMER_KEY'),
-		os.getenv('YELP_CONSUMER_SECRET'),
-		os.getenv('YELP_TOKEN'),
-		os.getenv('YELP_TOKEN_SECRET')
+		get_env_variable('YELP_CONSUMER_KEY'),
+		get_env_variable('YELP_CONSUMER_SECRET'),
+		get_env_variable('YELP_TOKEN'),
+		get_env_variable('YELP_TOKEN_SECRET')
 		)
 
 
