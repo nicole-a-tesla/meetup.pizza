@@ -6,6 +6,7 @@ from unittest.mock import patch
 from meetup.services.http_client import HttpClient
 from meetup.services.meetup_client import MeetupClient
 from meetup.services.meetup_service import MeetupService
+from meetup.services.parsed_meetup_response import ParsedMeetupResponse
 from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_url_builder import MeetupUrlBuilder
 from meetup.models import Meetup
@@ -59,3 +60,26 @@ class TestUrlBuilder(TestCase):
     expected_params = {'key': "FAKE KEY"}
     self.assertEquals(expected_params, api_url_components['params'])
 
+class TestParsedMeetupResponse(TestCase):
+  def setUp(self):
+    self.raw_parsed_response = {'venue'           : 'Someplace',
+                                'next_event_topic': 'some topic',
+                                'datetime'        : 1458730800000,
+                                'lat'             : '40.689745',
+                                'lon'             : '-74.0476567'}
+    self.parsed_meetup_response = ParsedMeetupResponse(self.raw_parsed_response)
+
+  def test_parsed_meetup_response_has_venue(self):
+    self.assertEquals(self.raw_parsed_response['venue'], self.parsed_meetup_response.venue)
+
+  def test_parsed_meetup_response_has_next_event_topic(self):
+    self.assertEquals(self.raw_parsed_response['next_event_topic'], self.parsed_meetup_response.next_event_topic)
+
+  def test_parsed_meetup_response_has_datetime(self):
+    self.assertEquals(self.raw_parsed_response['datetime'], self.parsed_meetup_response.datetime)
+
+  def test_parsed_meetup_response_has_lat(self):
+    self.assertEquals(self.raw_parsed_response['lat'], self.parsed_meetup_response.lat)
+
+  def test_parsed_meetup_response_has_lon(self):
+    self.assertEquals(self.raw_parsed_response['lon'], self.parsed_meetup_response.lon)

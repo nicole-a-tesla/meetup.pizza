@@ -9,6 +9,7 @@ from unittest.mock import patch
 from meetup.models import Meetup
 from meetup.services.meetup_api import MeetupApi
 from meetup.presenter.meetup_presenter import MeetupPresenter
+from meetup.services.parsed_meetup_response import ParsedMeetupResponse
 from meetup.services.meetup_api_response_parser import MeetupApiResponseParser
 from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 
@@ -171,8 +172,14 @@ class TestMeetupPresenter(TestCase):
 
   def setUp(self):
     self.meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/papers-we-love/')
-    parsed_response = {'venue': 'The Lexington', 'next_event_topic': 'Code & Coffee', 'datetime': 1458730800000, 'lat': 40.75501251220703, 'lon':  -73.97337341308594}
-    self.presenter = MeetupPresenter(self.meetup, parsed_response)
+    self.raw_parsed_response = {'venue'           : 'The Lexington',
+                                'next_event_topic': 'Code & Coffee',
+                                'datetime'        : 1458730800000,
+                                'lat'             : 40.75501251220703,
+                                'lon'             : -73.97337341308594}
+    self.parsed_meetup_response = ParsedMeetupResponse(self.raw_parsed_response)
+
+    self.presenter = MeetupPresenter(self.meetup, self.parsed_meetup_response)
 
   def test_meetup_presenter_returns_meetup_url(self):
     self.assertEquals(self.presenter.meetup_url(), 'http://www.meetup.com/papers-we-love/')

@@ -17,20 +17,20 @@ class MeetupPresenter():
     return self.meetup.name
 
   def meetup_venue(self):
-    return self.parsed_api_response.get('venue')
+    return self.parsed_api_response.venue
 
   def meetup_next_event_topic(self):
-    return self.parsed_api_response.get('next_event_topic')
+    return self.parsed_api_response.next_event_topic
 
   def meetup_datetime(self):
-    time_string = self.parsed_api_response.get('datetime')
+    time_string = self.parsed_api_response.datetime
     utc_time = datetime.datetime.fromtimestamp(int(time_string) / 1000)
     eastern_time = make_aware(utc_time).strftime('%m/%d/%Y, %I:%M:%S %p %Z')
     return eastern_time
 
   def meetup_map_url(self):
-    lat = self.parsed_api_response.get('lat')
-    lon = self.parsed_api_response.get('lon')
+    lat = self.parsed_api_response.lat
+    lon = self.parsed_api_response.lon
     return "https://www.google.com/maps?q=%s,%s" % (lat, lon)
 
   def meetup_pizza_places(self):
