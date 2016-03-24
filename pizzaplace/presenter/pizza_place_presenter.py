@@ -1,7 +1,7 @@
 class PizzaPlacePresenter():
-  def __init__(self, pizza_place, YelpApi):
+  def __init__(self, pizza_place, yelp_api):
     self.pizza_place = pizza_place
-    self.yelp_api = YelpApi
+    self.yelp_api = yelp_api
 
   def yelp_url(self):
     return self.pizza_place.yelp_url
