@@ -7,7 +7,6 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from meetup.models import Meetup
-from meetup.services.meetup_api import MeetupApi
 from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.parsed_meetup_response import ParsedMeetupResponse
 from meetup.services.meetup_api_response_parser import MeetupApiResponseParser
@@ -52,37 +51,6 @@ meetup_api_response = [{
         },
       }
     ]
-
-
-
-
-
-
-
-class TestMeetupApi(TestCase):
-
-  def test_can_parse_out_urlname(self):
-    lookup_agent = self.lookup_agent_builder("https://meetup.com/Hello-Pizza/")
-    urlname = lookup_agent.get_unique_id()
-    self.assertEquals("Hello-Pizza", urlname)
-
-  def test_invalid_url_returns_404(self):
-    lookup_agent = self.lookup_agent_builder("http://meetup.com/NONSENSE-NOTHING/")
-    response = lookup_agent.get_response()
-    self.assertEqual(response.status_code, 404)
-
-  def test_validator_returns_true_for_valid_url(self):
-    lookup_agent = self.lookup_agent_builder("http://meetup.com/papers-we-love/")
-    is_valid = lookup_agent.exists()
-    self.assertTrue(is_valid)
-
-  def test_validator_returns_false_for_invalid_url(self):
-    lookup_agent = self.lookup_agent_builder("http://meetup.com/this-is-not-a-meetup/")
-    is_valid = lookup_agent.exists()
-    self.assertFalse(is_valid)
-
-  def lookup_agent_builder(self, url):
-    return MeetupApi(url)
 
 
 class TestMeetupPresenter(TestCase):

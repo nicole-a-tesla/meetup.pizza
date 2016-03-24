@@ -7,10 +7,13 @@ class MeetupClient():
     self.http_client = HttpClient
     self.meetup_url_builder = MeetupUrlBuilder(meetup_url)
     self.response_parser = MeetupApiResponseParser
+    self.request_components = self.meetup_url_builder.build_api_components()
 
   def get_meetup_info(self):
-    request_components = self.meetup_url_builder.build_api_components()
-    response = self.http_client.get_response(request_components)
+    response = self.http_client.get_response(self.request_components)
     parsed_response = self.response_parser(response).parse()
     return parsed_response
 
+  def exists(self):
+    response = self.http_client.get_response(self.request_components)
+    return response.status_code == 200

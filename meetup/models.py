@@ -4,7 +4,7 @@ from django.db import models
 
 from model_utils.models import TimeStampedModel
 
-from meetup.services.meetup_api import MeetupApi
+from meetup.services.meetup_client import MeetupClient
 from pizzaplace.models import PizzaPlace
 
 def validate_urlname(url):
@@ -15,7 +15,7 @@ def validate_urlname(url):
   return validator(url)
 
 def validate_meetup_exists(url):
-  if not MeetupApi(url).exists():
+  if not MeetupClient(url).exists():
     raise ValidationError("Meetup not found on meetup.com")
 
 

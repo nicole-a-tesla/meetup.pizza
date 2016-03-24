@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.conf import settings
+from django.http import HttpResponse
 
 from unittest.mock import patch
 
@@ -33,6 +34,12 @@ class TestMeetupClient(TestCase):
     self.assertTrue('datetime' in parsed_meetup_client_response)
     self.assertTrue('lat' in parsed_meetup_client_response)
     self.assertTrue('lon' in parsed_meetup_client_response)
+
+  @patch('meetup.services.meetup_client.HttpClient')
+  def test_meetup_url_exists(self, mock_http_response):
+    mock_http_response.get_response.return_value = HttpResponse()
+    meetup_client = MeetupClient('https://api.meetup.com/papers-we-love')
+    self.assertTrue(meetup_client.exists())
 
 class TestHttpClient(TestCase):
   def test_returns_200_ok_from_valid_url(self):

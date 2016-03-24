@@ -8,7 +8,7 @@ from meetup.models import Meetup
 class TestMeetupModelValidations(TestCase):
 
   def setUp(self):
-    self.patcher = patch('meetup.models.MeetupApi')
+    self.patcher = patch('meetup.models.MeetupClient')
     self.mock_agent = self.patcher.start()
 
   def test_meetup_raises_error_on_invalid_url(self):
