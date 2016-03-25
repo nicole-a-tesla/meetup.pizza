@@ -16,5 +16,5 @@ class MeetupClient():
     return parsed_response
 
   def exists(self):
-    response = self.http_client.get_response(self.request_components)
+    response = self.http_client.get_response(self.meetup_url, self.request_components)
     return response.status_code == 200

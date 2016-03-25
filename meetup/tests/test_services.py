@@ -35,9 +35,9 @@ class TestMeetupClient(TestCase):
     self.assertTrue('lat' in parsed_meetup_client_response)
     self.assertTrue('lon' in parsed_meetup_client_response)
 
-  @patch('meetup.services.meetup_client.HttpClient')
-  def test_meetup_url_exists(self, mock_http_response):
-    mock_http_response.get_response.return_value = HttpResponse()
+  @patch('meetup.services.http_client.requests')
+  def test_meetup_url_exists(self, mock_http_requests):
+    mock_http_requests.get.return_value = HttpResponse()
     meetup_client = MeetupClient('https://api.meetup.com/papers-we-love')
     self.assertTrue(meetup_client.exists())
 
