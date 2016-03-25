@@ -1,5 +1,5 @@
+from django.db import DataError, IntegrityError
 from django.test import TestCase
-from django.db import IntegrityError, DataError
 
 from meetup.models import Meetup
 
@@ -33,12 +33,12 @@ class TestMeetup(TestCase):
     self.assertEquals("Mr. Meetup", str(m))
 
   def test_meetup_name_is_unique(self):
-    m = Meetup.objects.create(name="Meetup", meetup_url='http://meetup.com/some-meetup')
+    Meetup.objects.create(name="Meetup", meetup_url='http://meetup.com/some-meetup')
     n = Meetup(name="Meetup", meetup_url='http://meetup.com/some-other-meetup')
     self.assertRaises(IntegrityError, n.save)
 
   def test_meetup_url_is_unique(self):
-    m = Meetup.objects.create(name="Meetup", meetup_url='http://meetup.com/some-meetup')
+    Meetup.objects.create(name="Meetup", meetup_url='http://meetup.com/some-meetup')
     n = Meetup(name="Meetup new", meetup_url='http://meetup.com/some-meetup')
     self.assertRaises(IntegrityError, n.save)
 

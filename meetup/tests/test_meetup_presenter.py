@@ -1,9 +1,10 @@
 from django.test import TestCase
 
 from meetup.models import Meetup
-from meetup.services.parsed_meetup_response import ParsedMeetupResponse
-from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 from meetup.presenter.meetup_presenter import MeetupPresenter
+from meetup.services.parsed_meetup_response import ParsedMeetupResponse
+
+from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 
 
 class TestMeetupPresenter(TestCase):
@@ -39,5 +40,5 @@ class TestMeetupPresenter(TestCase):
 
   def test_meetup_presenter_returns_pizza_place_presenters(self):
     self.meetup.save()
-    pizza_place = self.meetup.pizza_places.create(name="Pizza place", yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
+    self.meetup.pizza_places.create(name="Pizza place", yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
     self.assertIsInstance(self.presenter.meetup_pizza_places()[0], PizzaPlacePresenter)
