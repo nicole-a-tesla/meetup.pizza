@@ -2,7 +2,6 @@ from django.test import TestCase
 from django.http import HttpResponse
 
 from unittest.mock import MagicMock
-from unittest.mock import patch
 
 from meetup.models import Meetup
 from meetup.services.meetup_api_response_parser import MeetupApiResponseParser
