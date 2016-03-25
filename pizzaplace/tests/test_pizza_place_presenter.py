@@ -9,9 +9,6 @@ from pizzaplace.services.parsed_yelp_response import ParsedYelpResponse
 class TestPizzaPlacePresenter(TestCase):
 
   def setUp(self):
-    self.patcher = patch('pizzaplace.services.yelp_api')
-    self.mock_yelp_api = self.patcher.start()
-    self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {'rating' : 5}
     self.pizza_place = PizzaPlace(name='Oh Pizza!', yelp_url='https://www.yelp.com/biz/lombardis-pizza-new-york')
 
   def test_yelp_presenter_returns_yelp_url(self):
@@ -43,6 +40,3 @@ class TestPizzaPlacePresenter(TestCase):
     parsed_yelp_response = ParsedYelpResponse(raw_yelp_response)
     presenter = PizzaPlacePresenter(self.pizza_place, parsed_yelp_response)
     self.assertEquals(presenter.pizza_place_rating(), "No Rating")
-
-  def tearDown(self):
-    self.addCleanup(self.patcher.stop)

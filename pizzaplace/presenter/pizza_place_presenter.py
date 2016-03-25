@@ -15,10 +15,3 @@ class PizzaPlacePresenter():
       return int(rating) * "🍕"
     return 'No Rating'
 
-    # response = self.yelp_api(self.yelp_url()).get_response()
-    # json = response.json()
-    # if json:
-    #   rating = json.get('rating')
-    #   return int(rating) * "🍕"
-    # return 'No Rating'
-

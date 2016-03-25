@@ -4,7 +4,8 @@ from django.db import models
 
 from model_utils.models import TimeStampedModel
 
-from pizzaplace.services.yelp_api import YelpApi
+from pizzaplace.services.yelp_client import YelpClient
+
 
 def validate_url(url):
   validator = RegexValidator(
@@ -14,7 +15,7 @@ def validate_url(url):
   return validator(url)
 
 def validate_yelp_business_exists(url):
-  if not YelpApi(url).exists():
+  if not YelpClient(url).exists():
     raise ValidationError("Yelp Business not found on Yelp.com")
 
 class PizzaPlace(TimeStampedModel):
