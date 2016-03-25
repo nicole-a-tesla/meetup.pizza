@@ -20,7 +20,7 @@ class TestMeetupService(TestCase):
   def test_service_gets_info_from_meetup_client(self):
     meetup = Meetup(name="Ms. Meetup", meetup_url=valid_meetup_url)
     client_info = MeetupService(meetup).get_decorated_meetup()
-    self.assertIsInstance(client_info, MeetupPresenter)
+    self.assertEquals('Ms. Meetup', client_info.meetup_name())
 
 class TestMeetupClient(TestCase):
 
@@ -44,29 +44,29 @@ class TestMeetupClient(TestCase):
 class TestHttpClient(TestCase):
   def test_returns_200_ok_from_valid_url(self):
     key = {"key": settings.MEETUP_KEY }
-    args = {'url': 'https://api.meetup.com/papers-we-love',
-             'params': key}
-    response = HttpClient.get_response(args)
+    url = 'https://api.meetup.com/papers-we-love'
+    args = {'params': key}
+    response = HttpClient.get_response(url, args)
     self.assertEquals(200, response.status_code)
 
   def test_returns_404_for_invalid_url(self):
     key = {"key": settings.MEETUP_KEY }
-    args = {'url': 'https://api.meetup.com/papers-we-HATE',
-             'params': key}
-    response = HttpClient.get_response(args)
+    url = 'https://api.meetup.com/papers-we-HATE'
+    args = {'params': key}
+    response = HttpClient.get_response(url, args)
     self.assertEquals(404, response.status_code)
 
 class TestUrlBuilder(TestCase):
-  def test_build_api_components(self):
-    api_url_components = MeetupUrlBuilder(valid_meetup_url).build_api_components()
-    self.assertEquals('https://api.meetup.com/papers-we-love/events', api_url_components['url'])
+  def test_build_api_url(self):
+    api_url = MeetupUrlBuilder(valid_meetup_url).build_api_url()
+    self.assertEquals('https://api.meetup.com/papers-we-love/events', api_url)
 
   @patch('meetup.services.meetup_url_builder.settings')
-  def test_builds_params_hash(self, mock_settings):
+  def test_builds_authorization_hash(self, mock_settings):
     mock_settings.MEETUP_KEY = "FAKE KEY"
-    api_url_components = MeetupUrlBuilder(valid_meetup_url).build_api_components()
+    components = MeetupUrlBuilder(valid_meetup_url).build_authorization_components()
     expected_params = {'key': "FAKE KEY"}
-    self.assertEquals(expected_params, api_url_components['params'])
+    self.assertEquals(expected_params, components['params'])
 
 class TestParsedMeetupResponse(TestCase):
   def setUp(self):

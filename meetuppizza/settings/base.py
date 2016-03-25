@@ -39,6 +39,7 @@ SECRET_KEY = 'secret!'
 DEBUG = False
 
 MEETUP_KEY = get_env_variable("MEETUP_KEY")
+
 YELP_OAUTH_OBJECT = OAuth1(
 		get_env_variable('YELP_CONSUMER_KEY'),
 		get_env_variable('YELP_CONSUMER_SECRET'),

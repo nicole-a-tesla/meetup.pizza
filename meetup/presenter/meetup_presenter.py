@@ -4,7 +4,7 @@ from django.utils.timezone import make_aware
 
 from meetup.services import map_url_generator
 from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
-from pizzaplace.services.yelp_api import YelpApi
+from pizzaplace.services.yelp_service import YelpService
 
 class MeetupPresenter():
   def __init__(self, meetup, parsed_response):
@@ -36,5 +36,5 @@ class MeetupPresenter():
 
   def meetup_pizza_places(self):
     pizza_places = self.meetup.pizza_places.all()
-    pizza_place_presenters = [PizzaPlacePresenter(place, YelpApi) for place in pizza_places]
+    pizza_place_presenters = [YelpService(place).get_decorated_pizza_place() for place in pizza_places]
     return pizza_place_presenters

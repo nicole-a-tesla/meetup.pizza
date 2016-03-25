@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from pizzaplace.models import PizzaPlace
 from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
-
+from pizzaplace.services.parsed_yelp_response import ParsedYelpResponse
 
 class TestPizzaPlacePresenter(TestCase):
 
@@ -15,25 +15,33 @@ class TestPizzaPlacePresenter(TestCase):
     self.pizza_place = PizzaPlace(name='Oh Pizza!', yelp_url='https://www.yelp.com/biz/lombardis-pizza-new-york')
 
   def test_yelp_presenter_returns_yelp_url(self):
-    presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
+    raw_yelp_response = {'rating': 4}
+    parsed_yelp_response = ParsedYelpResponse(raw_yelp_response)
+    presenter = PizzaPlacePresenter(self.pizza_place, parsed_yelp_response)
     self.assertEquals(presenter.yelp_url(), 'https://www.yelp.com/biz/lombardis-pizza-new-york')
 
   def test_yelp_presenter_returns_business_name(self):
-    presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
+    raw_yelp_response = {'rating': 4}
+    parsed_yelp_response = ParsedYelpResponse(raw_yelp_response)
+    presenter = PizzaPlacePresenter(self.pizza_place, parsed_yelp_response)
     self.assertEquals(presenter.pizza_place_name(), 'Oh Pizza!')
 
   def test_yelp_presenter_returns_yelp_review(self):
-    presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
+    raw_yelp_response = {'rating': 5}
+    parsed_yelp_response = ParsedYelpResponse(raw_yelp_response)
+    presenter = PizzaPlacePresenter(self.pizza_place, parsed_yelp_response)
     self.assertEquals(presenter.pizza_place_rating(), "🍕🍕🍕🍕🍕")
 
   def test_yelp_presenter_rounds_yelp_review_down(self):
-    self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {'rating' : 4.5}
-    presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
+    raw_yelp_response = {'rating': 4.5}
+    parsed_yelp_response = ParsedYelpResponse(raw_yelp_response)
+    presenter = PizzaPlacePresenter(self.pizza_place, parsed_yelp_response)
     self.assertEquals(presenter.pizza_place_rating(), "🍕🍕🍕🍕")
 
-  def test_yelp_presenter_rounds_yelp_review_down(self):
-    self.mock_yelp_api.return_value.get_response.return_value.json.return_value = {}
-    presenter = PizzaPlacePresenter(self.pizza_place, self.mock_yelp_api)
+  def test_yelp_presenter_returns_no_rating(self):
+    raw_yelp_response = {}
+    parsed_yelp_response = ParsedYelpResponse(raw_yelp_response)
+    presenter = PizzaPlacePresenter(self.pizza_place, parsed_yelp_response)
     self.assertEquals(presenter.pizza_place_rating(), "No Rating")
 
   def tearDown(self):

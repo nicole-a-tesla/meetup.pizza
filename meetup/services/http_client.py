@@ -1,9 +1,6 @@
 import requests
 
 class HttpClient():
-  def get_response(url_components):
-    url = url_components['url']
-    params = url_components['params']
-    return requests.get(url, params=params)
 
-
+  def get_response(url, url_components):
+    return requests.get(url, **url_components)
