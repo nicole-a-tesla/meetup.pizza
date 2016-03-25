@@ -9,7 +9,6 @@ from meetup.services.meetup_client import MeetupClient
 from meetup.services.meetup_service import MeetupService
 from meetup.services.parsed_meetup_response import ParsedMeetupResponse
 from meetup.services import map_url_generator
-from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.meetup_url_builder import MeetupUrlBuilder
 from meetup.models import Meetup
 

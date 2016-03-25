@@ -3,7 +3,6 @@ from django.http import HttpResponse
 
 from unittest.mock import MagicMock
 
-from meetup.models import Meetup
 from meetup.services.meetup_api_response_parser import MeetupApiResponseParser
 
 
