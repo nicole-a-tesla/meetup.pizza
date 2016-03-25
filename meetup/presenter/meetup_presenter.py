@@ -3,7 +3,6 @@ import datetime
 from django.utils.timezone import make_aware
 
 from meetup.services import map_url_generator
-from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.yelp_service import YelpService
 
 class MeetupPresenter():

@@ -16,6 +16,7 @@ from unipath import Path
 import requests
 from requests_oauthlib import OAuth1
 
+
 def get_env_variable(var_name):
     try:
         return os.getenv(var_name)
@@ -41,11 +42,10 @@ DEBUG = False
 MEETUP_KEY = get_env_variable("MEETUP_KEY")
 
 YELP_OAUTH_OBJECT = OAuth1(
-		get_env_variable('YELP_CONSUMER_KEY'),
-		get_env_variable('YELP_CONSUMER_SECRET'),
-		get_env_variable('YELP_TOKEN'),
-		get_env_variable('YELP_TOKEN_SECRET')
-		)
+    get_env_variable('YELP_CONSUMER_KEY'),
+    get_env_variable('YELP_CONSUMER_SECRET'),
+    get_env_variable('YELP_TOKEN'),
+    get_env_variable('YELP_TOKEN_SECRET'))
 
 
 # Application definition

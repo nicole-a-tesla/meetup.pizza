@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 from pizzaplace.models import PizzaPlace
 
+
 class TestPizzaPlaceModelValidations(TestCase):
   def setUp(self):
     self.invalid_url_format_message = "Url should be in form 'https://www.yelp.com/biz/some-pizza-place'"
@@ -51,4 +52,3 @@ class TestPizzaPlaceModelValidations(TestCase):
     pizza_place = PizzaPlace(name="Oh Pizza!", yelp_url='https://www.yelp.com/biz/lombardis-pizza-new-york/some-other-stuff')
     with self.assertRaisesRegexp(ValidationError, self.invalid_url_format_message):
       pizza_place.full_clean()
-

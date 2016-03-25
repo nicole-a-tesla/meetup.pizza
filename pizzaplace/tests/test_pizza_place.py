@@ -4,6 +4,7 @@ from django.db import IntegrityError
 
 from pizzaplace.models import PizzaPlace
 
+
 class TestPizzaPlace(TestCase):
 
   def setUp(self):
@@ -19,12 +20,12 @@ class TestPizzaPlace(TestCase):
     self.assertEquals(pizza_place.name, self.pizza_name1)
 
   def test_name_must_be_unique(self):
-    place1 = PizzaPlace.objects.create(name=self.pizza_name1, yelp_url=self.prince_street_pizza_url)
+    PizzaPlace.objects.create(name=self.pizza_name1, yelp_url=self.prince_street_pizza_url)
     place2 = PizzaPlace(name=self.pizza_name1, yelp_url='https://www.yelp.com/biz/lombardis-pizza-new-york')
     self.assertRaises(IntegrityError, place2.save)
 
   def test_url_must_be_unique(self):
-    place1 = PizzaPlace.objects.create(name="Much Pizza", yelp_url=self.prince_street_pizza_url)
+    PizzaPlace.objects.create(name="Much Pizza", yelp_url=self.prince_street_pizza_url)
     place2 = PizzaPlace(name=self.pizza_name1, yelp_url=self.prince_street_pizza_url)
     self.assertRaises(IntegrityError, place2.save)
 
@@ -44,4 +45,3 @@ class TestPizzaPlace(TestCase):
   def test_raises_error_if_url_is_blank(self):
     place = PizzaPlace(name=self.pizza_name1)
     self.assertRaises(IntegrityError, place.save)
-

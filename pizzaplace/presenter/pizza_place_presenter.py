@@ -14,4 +14,3 @@ class PizzaPlacePresenter():
     if rating:
       return int(rating) * "🍕"
     return 'No Rating'
-

@@ -3,6 +3,7 @@ from django.db import IntegrityError, DataError
 
 from meetup.models import Meetup
 
+
 class TestMeetup(TestCase):
 
   def test_meetup_is_a_thing(self):
@@ -23,7 +24,7 @@ class TestMeetup(TestCase):
     self.assertRaises(IntegrityError, meetup.save)
 
   def test_meetup_name_can_not_be_over_500_characters(self):
-    name = 'x' *501
+    name = 'x' * 501
     meetup = Meetup(name=name, meetup_url='http://meetup.com/some-meetup')
     self.assertRaises(DataError, meetup.save)
 
@@ -42,6 +43,6 @@ class TestMeetup(TestCase):
     self.assertRaises(IntegrityError, n.save)
 
   def test_getting_all_associated_pizzas(self):
-    meetup= Meetup.objects.create(name="Meetup1", meetup_url='http://meetup.com/some-meetup')
+    meetup = Meetup.objects.create(name="Meetup1", meetup_url='http://meetup.com/some-meetup')
     place = meetup.pizza_places.create(name="Pete Zazz", yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
     self.assertEquals(place, meetup.pizza_places.first())

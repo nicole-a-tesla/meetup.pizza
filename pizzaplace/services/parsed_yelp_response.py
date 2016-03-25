@@ -5,4 +5,3 @@ class ParsedYelpResponse():
   @property
   def rating(self):
       return self.raw_parsed_response.get('rating')
-

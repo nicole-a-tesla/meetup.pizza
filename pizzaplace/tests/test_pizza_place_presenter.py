@@ -5,6 +5,7 @@ from pizzaplace.models import PizzaPlace
 from pizzaplace.presenter.pizza_place_presenter import PizzaPlacePresenter
 from pizzaplace.services.parsed_yelp_response import ParsedYelpResponse
 
+
 class TestPizzaPlacePresenter(TestCase):
 
   def setUp(self):

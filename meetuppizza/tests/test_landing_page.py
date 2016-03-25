@@ -9,15 +9,15 @@ from meetup.presenter.meetup_presenter import MeetupPresenter
 from meetup.services.parsed_meetup_response import ParsedMeetupResponse
 from meetuppizza.views import index
 
+
 class TestLandingPage(TestCase):
   def setUp(self):
-    self.raw_parsed_response = {'venue': 'The Lexington',
-                            'next_event_topic': 'Code Coffee',
-                            'datetime': 1458730800000,
-                            'lat': '40.75501251220703',
-                            'lon':  '-73.97337341308594'}
+    self.raw_parsed_response = {'venue'           : 'The Lexington',
+                                'next_event_topic': 'Code Coffee',
+                                'datetime'        : 1458730800000,
+                                'lat'             : '40.75501251220703',
+                                'lon'             : '-73.97337341308594'}
     self.parsed_meetup_response = ParsedMeetupResponse(self.raw_parsed_response)
-
 
     self.meetup = Meetup.objects.create(name='new meetup', meetup_url='http://www.meetup.com/papers-we-love/')
     self.meetup.pizza_places.create(name='Prince', yelp_url='https://www.yelp.com/biz/prince-st-pizza-new-york')
@@ -26,7 +26,6 @@ class TestLandingPage(TestCase):
     self.mock_service.return_value.get_decorated_meetup.return_value = MeetupPresenter(self.meetup, self.parsed_meetup_response)
 
     self.request = RequestFactory().get("/")
-
 
   def test_landing_page_contains_pizza(self):
     response = index(self.request)
@@ -72,6 +71,7 @@ class TestLandingPage(TestCase):
 
   def tearDown(self):
     self.addCleanup(self.patcher.stop)
+
 
 class TestValidHTML(TestCase):
   def setUp(self):

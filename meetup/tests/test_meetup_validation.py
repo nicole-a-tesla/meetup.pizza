@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from meetup.models import Meetup
 
+
 class TestMeetupModelValidations(TestCase):
 
   def setUp(self):
@@ -13,31 +14,31 @@ class TestMeetupModelValidations(TestCase):
     self.invalid_url_format_message = "Url should be in form 'http://meetup.com/meetup-name'"
 
   def test_meetup_raises_error_on_invalid_url(self):
-    meetup= Meetup(name="Meetup1", meetup_url='hi/ok/what')
+    meetup = Meetup(name="Meetup1", meetup_url='hi/ok/what')
     self.assertRaises(ValidationError, meetup.full_clean)
 
   def test_error_raised_if_url_does_not_point_to_meetupdotcom(self):
-    meetup= Meetup(name="Meetup1", meetup_url='http://www.example.com/')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.example.com/')
     with self.assertRaisesRegexp(ValidationError, self.invalid_url_format_message):
       meetup.full_clean()
 
   def test_error_raised_if_no_urlname_in_meetup_url(self):
-    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/')
     with self.assertRaisesRegexp(ValidationError, self.invalid_url_format_message):
       meetup.full_clean()
 
   def test_error_raised_if_no_trailing_slash_in_meetup_url(self):
-    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours')
     with self.assertRaisesRegexp(ValidationError, self.invalid_url_format_message):
       meetup.full_clean()
 
   def test_error_raised_if_multiple_urlnames(self):
-    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours/events/')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours/events/')
     with self.assertRaisesRegexp(ValidationError, self.invalid_url_format_message):
       meetup.full_clean()
 
   def test_meetup_url_with_urlname_and_trailing_slash_passes(self):
-    meetup= Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours/')
+    meetup = Meetup(name="Meetup1", meetup_url='http://www.meetup.com/hackerhours/')
     errors_raiesed_by_meetup = meetup.full_clean()
     self.assertTrue(errors_raiesed_by_meetup == None)
 

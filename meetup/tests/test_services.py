@@ -16,17 +16,19 @@ from meetup.models import Meetup
 
 valid_meetup_url = 'https://www.meetup.com/papers-we-love/'
 
+
 class TestMeetupService(TestCase):
   def test_service_gets_info_from_meetup_client(self):
     meetup = Meetup(name="Ms. Meetup", meetup_url=valid_meetup_url)
     client_info = MeetupService(meetup).get_decorated_meetup()
     self.assertEquals('Ms. Meetup', client_info.meetup_name())
 
+
 class TestMeetupClient(TestCase):
 
   @patch('meetup.services.meetup_client.MeetupApiResponseParser')
   def test_client_parsed_response_includes_venue(self, mock_response):
-    parsed_response = {'venue': 'Someplace', 'next_event_topic': 'some topic', 'datetime': 1458730800000, 'lat': '40.689745', 'lon':  '-74.0476567'}
+    parsed_response = {'venue': 'Someplace', 'next_event_topic': 'some topic', 'datetime': 1458730800000, 'lat': '40.689745', 'lon': '-74.0476567'}
     mock_response.return_value.parse.return_value = parsed_response
     parsed_meetup_client_response = MeetupClient(valid_meetup_url).get_meetup_info()
     self.assertTrue('venue' in parsed_meetup_client_response)
@@ -41,20 +43,22 @@ class TestMeetupClient(TestCase):
     meetup_client = MeetupClient('https://api.meetup.com/papers-we-love')
     self.assertTrue(meetup_client.exists())
 
+
 class TestHttpClient(TestCase):
   def test_returns_200_ok_from_valid_url(self):
-    key = {"key": settings.MEETUP_KEY }
+    key = {"key": settings.MEETUP_KEY}
     url = 'https://api.meetup.com/papers-we-love'
     args = {'params': key}
     response = HttpClient.get_response(url, args)
     self.assertEquals(200, response.status_code)
 
   def test_returns_404_for_invalid_url(self):
-    key = {"key": settings.MEETUP_KEY }
+    key = {"key": settings.MEETUP_KEY}
     url = 'https://api.meetup.com/papers-we-HATE'
     args = {'params': key}
     response = HttpClient.get_response(url, args)
     self.assertEquals(404, response.status_code)
+
 
 class TestUrlBuilder(TestCase):
   def test_build_api_url(self):
@@ -67,6 +71,7 @@ class TestUrlBuilder(TestCase):
     components = MeetupUrlBuilder(valid_meetup_url).build_authorization_components()
     expected_params = {'key': "FAKE KEY"}
     self.assertEquals(expected_params, components['params'])
+
 
 class TestParsedMeetupResponse(TestCase):
   def setUp(self):
@@ -92,6 +97,8 @@ class TestParsedMeetupResponse(TestCase):
   def test_parsed_meetup_response_has_lon(self):
     self.assertEquals(self.raw_parsed_response['lon'], self.parsed_meetup_response.lon)
 
+
 class TestMapUrlGenerator(TestCase):
   def test_google_map_url_generator(self):
-    self.assertEquals("https://www.google.com/maps?q=40.75501251220703,-73.97337341308594", map_url_generator.generate_google_url(40.75501251220703, -73.97337341308594))
+    expected_url = "https://www.google.com/maps?q=40.75501251220703,-73.97337341308594"
+    self.assertEquals(expected_url, map_url_generator.generate_google_url(40.75501251220703, -73.97337341308594))

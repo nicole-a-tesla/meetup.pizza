@@ -15,4 +15,3 @@ class YelpUrlBuilder():
   def get_unique_id(self):
     url_minus_queries = self.yelp_url.split('?')[0]
     return url_minus_queries.split('/')[-1]
-

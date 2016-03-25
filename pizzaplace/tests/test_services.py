@@ -16,6 +16,7 @@ from pizzaplace.services.yelp_api_response_parser import YelpApiResponseParser
 
 valid_yelp_url = 'https://www.yelp.com/biz/prince-st-pizza-new-york'
 
+
 class TestHttpClient(TestCase):
   def test_returns_200_ok_from_valid_url(self):
     auth = settings.YELP_OAUTH_OBJECT
@@ -31,6 +32,7 @@ class TestHttpClient(TestCase):
     response = HttpClient.get_response(url, args)
     self.assertEquals(400, response.status_code)
 
+
 class TestUrlBuilder(TestCase):
   def test_build_api_components(self):
     api_url = YelpUrlBuilder(valid_yelp_url).build_api_url()
@@ -43,6 +45,7 @@ class TestUrlBuilder(TestCase):
     expected_params = "FAKE OAUTH"
     self.assertEquals(expected_params, components['auth'])
 
+
 class TestParsedYelpResponse(TestCase):
   def setUp(self):
     self.raw_parsed_response = {'rating' : 5}
@@ -51,12 +54,14 @@ class TestParsedYelpResponse(TestCase):
   def test_parsed_yelp_response_has_rating(self):
     self.assertEquals(self.raw_parsed_response['rating'], self.parsed_yelp_response.rating)
 
+
 class TestYelpApiResponseParser(TestCase):
   def test_parsed_response_contains_rating(self):
     mock_response = HttpResponse()
     mock_response.json = MagicMock(return_value={'rating' : 4})
     yelp_api_response_parser = YelpApiResponseParser(mock_response)
     self.assertEquals(yelp_api_response_parser.parse().get('rating'), 4)
+
 
 class TestYelpClient(TestCase):
   @patch('pizzaplace.services.yelp_client.YelpApiResponseParser')
@@ -71,10 +76,9 @@ class TestYelpClient(TestCase):
     yelp_client = YelpClient(valid_yelp_url)
     self.assertTrue(yelp_client.exists())
 
+
 class TestYelpServices(TestCase):
   def test_service_gets_info_from_yelp_client(self):
-    pizzaplace = PizzaPlace(name='Prince Street Pizza',yelp_url=valid_yelp_url)
+    pizzaplace = PizzaPlace(name='Prince Street Pizza', yelp_url=valid_yelp_url)
     client_info = YelpService(pizzaplace).get_decorated_pizza_place()
     self.assertEquals('🍕🍕🍕🍕', client_info.pizza_place_rating())
-
-
