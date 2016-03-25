@@ -1,29 +1,32 @@
-def parse(api_response):
-  json = api_response.json()
-  parsed_response = {}
+class MeetupApiResponseParser():
+  def __init__(self, http_response):
+    self.http_response = http_response
 
-  if json:
+  @property
+  def json(self):
+    return self.http_response.json()[0]
 
-    try:
-      parsed_response['venue'] = json[0].get('venue').get('name')
-    except AttributeError:
-      parsed_response['venue'] = "No venue listed"
+  def extract_attribute(self, context, *args):
+    current_key = args[0]
+    not_found_message = "No %s listed" %current_key
+    value_at_current_key = context.get(current_key, not_found_message)
 
-    try:
-      parsed_response['next_event_topic'] = json[0].get('name')
-    except AttributeError:
-      parsed_response['next_event_topic'] = "No name listed"
+    if self.exit_condition_is_true(context, args):
+      return value_at_current_key
 
-    try:
-      parsed_response['datetime'] = json[0].get('time')
-    except AttributeError:
-      parsed_response['datetime'] = "No time listed"
+    return self.extract_attribute(value_at_current_key, args[1])
 
-    try:
-      parsed_response['lat'] = json[0].get('venue').get('lat')
-      parsed_response['lon'] = json[0].get('venue').get('lon')
-    except AttributeError:
-      parsed_response['lat'] = '40.689745'
-      parsed_response['lon'] = '-74.0476567'
+  def exit_condition_is_true(self, context, args):
+    this_is_the_last_arg = len(args) == 1
+    no_matching_element_found = context.get(args[0]) == None
+    return this_is_the_last_arg or no_matching_element_found
 
-  return parsed_response
+  def parse(self):
+    if self.json:
+      return {
+        'venue'           : self.extract_attribute(self.json, 'venue', 'name'),
+        'lat'             : self.extract_attribute(self.json, 'venue', 'lat'),
+        'lon'             : self.extract_attribute(self.json, 'venue', 'lon'),
+        'next_event_topic': self.extract_attribute(self.json, 'name'),
+        'datetime'        : self.extract_attribute(self.json, 'time')
+      }
